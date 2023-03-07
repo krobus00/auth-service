@@ -1,0 +1,27 @@
+env: "development"
+log_level: "debug"
+ports:
+  http: "3000"
+database:
+  host: "localhost:5432"
+  database: "auth_service"
+  username: "krobus"
+  password: "strongpassword"
+  sslmode: "disable"
+  max_idle_conns: 2
+  conn_max_lifetime: "1h"
+  ping_interval: "5s"
+  retry_attempts: 3
+redis:
+  cache_host: "redis://localhost:6379/0"
+  dial_timeout: 5
+  write_timeout: 2
+  read_timeout: 2
+  max_idle_conn: 20
+  max_active_conn: 50
+  disable_caching: false
+bcrypt:
+  cost: 10
+  salt: "krobot-"
+jwt:
+  secret_key: "asd"

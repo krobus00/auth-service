@@ -38,6 +38,11 @@ func HTTPPort() string {
 	return viper.GetString("ports.http")
 }
 
+// GRPCPort :nodoc:
+func GRPCport() string {
+	return viper.GetString("ports.grpc")
+}
+
 // DatabaseDSN :nodoc:
 func DatabaseDSN() string {
 	return fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=%s",
@@ -142,22 +147,6 @@ func RedisWriteTimeout() time.Duration {
 func RedisReadTimeout() time.Duration {
 	cfg := viper.GetString("redis.read_timeout")
 	return parseDuration(cfg, 2*time.Second)
-}
-
-// RedisMaxIdleConn :nodoc:
-func RedisMaxIdleConn() int {
-	if viper.GetInt("redis.max_idle_conn") > 0 {
-		return viper.GetInt("redis.max_idle_conn")
-	}
-	return 20
-}
-
-// RedisMaxActiveConn :nodoc:
-func RedisMaxActiveConn() int {
-	if viper.GetInt("redis.max_active_conn") > 0 {
-		return viper.GetInt("redis.max_active_conn")
-	}
-	return 50
 }
 
 // RedisCacheTTL :nodoc:

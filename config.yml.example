@@ -1,7 +1,8 @@
 env: "development"
-log_level: "debug"
+log_level: "info" # info|warm|error
 ports:
   http: "3000"
+  grpc: "5000"
 database:
   host: "localhost:5432"
   database: "auth_service"
@@ -17,11 +18,11 @@ redis:
   dial_timeout: 5
   write_timeout: 2
   read_timeout: 2
-  max_idle_conn: 20
-  max_active_conn: 50
   disable_caching: false
 bcrypt:
   cost: 10
   salt: "krobot-"
 jwt:
   secret_key: "asd"
+  access_token_duration: "15m"
+  refresh_token_duration: "24h"

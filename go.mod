@@ -5,6 +5,7 @@ go 1.18
 require (
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/golang-jwt/jwt/v4 v4.5.0
+	github.com/golang/protobuf v1.5.2
 	github.com/google/uuid v1.3.0
 	github.com/jpillora/backoff v1.0.0
 	github.com/labstack/echo/v4 v4.10.2
@@ -14,6 +15,8 @@ require (
 	github.com/spf13/cobra v1.6.1
 	github.com/spf13/viper v1.15.0
 	golang.org/x/crypto v0.6.0
+	google.golang.org/grpc v1.52.0
+	google.golang.org/protobuf v1.28.1
 	gorm.io/driver/postgres v1.4.8
 	gorm.io/gorm v1.24.6
 )
@@ -45,6 +48,7 @@ require (
 	golang.org/x/net v0.7.0 // indirect
 	golang.org/x/sys v0.5.0 // indirect
 	golang.org/x/text v0.7.0 // indirect
+	google.golang.org/genproto v0.0.0-20221227171554-f9683d7f8bef // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

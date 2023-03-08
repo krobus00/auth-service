@@ -1,0 +1,21 @@
+syntax = "proto3";
+package pb.auth;
+
+option go_package = "pb/auth";
+
+message User {
+  string id = 1;
+  string username = 2;
+  string email = 3;
+  string created_at = 4;
+  string updated_at = 5;
+}
+
+message AuthRequest {
+  string AccessToken = 1;
+}
+
+message HasAccessRequest {
+  string user_id = 1;
+  repeated string access_names = 2;
+}

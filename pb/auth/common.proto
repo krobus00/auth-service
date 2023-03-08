@@ -1,0 +1,6 @@
+syntax = "proto3";
+package pb.auth;
+
+option go_package = "pb/auth";
+
+message Empty {}

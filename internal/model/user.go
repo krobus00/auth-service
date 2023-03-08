@@ -5,6 +5,7 @@ import (
 	"errors"
 	"time"
 
+	pb "github.com/krobus00/auth-service/pb/auth"
 	"gorm.io/gorm"
 )
 
@@ -118,6 +119,18 @@ func (res *UserInfoResponse) ToHTTPResponse() *HTTPUserInfoResponse {
 		CreatedAt: res.CreatedAt,
 		UpdatedAt: res.UpdatedAt,
 		DeletedAt: res.DeletedAt,
+	}
+}
+
+func (res *UserInfoResponse) ToGRPCResponse() *pb.User {
+	createdAt := res.CreatedAt.Format(time.RFC3339Nano)
+	updatedAt := res.UpdatedAt.Format(time.RFC3339Nano)
+	return &pb.User{
+		Id:        res.ID,
+		Username:  res.Username,
+		Email:     res.Email,
+		CreatedAt: createdAt,
+		UpdatedAt: updatedAt,
 	}
 }
 

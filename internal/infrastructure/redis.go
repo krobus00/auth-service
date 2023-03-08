@@ -8,9 +8,17 @@ import (
 // NewRedisClient create redis db connection
 func NewRedisClient() (*goredis.Client, error) {
 	redisURL, err := goredis.ParseURL(config.RedisCacheHost())
+	redisOpts := &goredis.Options{
+		Network:      redisURL.Network,
+		Addr:         redisURL.Addr,
+		DB:           redisURL.DB,
+		DialTimeout:  config.RedisDialTimeout(),
+		WriteTimeout: config.RedisWriteTimeout(),
+		ReadTimeout:  config.RedisReadTimeout(),
+	}
 	if err != nil {
 		return nil, err
 	}
-	rdb := goredis.NewClient(redisURL)
+	rdb := goredis.NewClient(redisOpts)
 	return rdb, nil
 }

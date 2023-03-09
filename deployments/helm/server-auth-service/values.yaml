@@ -1,0 +1,14 @@
+app:
+  name: auth-service
+  group: app
+  replicaCount: 1
+  container:
+    image: krobus00/auth-service
+    version: v0.1.1
+    ports:
+      http: 3000
+      grpc: 5000
+  service:
+    type: ClusterIP
+    httpPort: 9080
+    grpcPort: 9180

@@ -1,0 +1,13 @@
+apiVersion: v2
+name: auth
+description: krobot auth service
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+keywords:
+  - auth
+  - go
+home: https://github.com/krobus00/auth-service
+maintainers:
+  - name: Michael Putera Wardana
+    url: https://github.com/krobus00

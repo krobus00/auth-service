@@ -23,6 +23,6 @@ bcrypt:
   cost: 10
   salt: "krobot-"
 jwt:
-  secret_key: "asd"
+  secret_key: "secret-key-for-jwt"
   access_token_duration: "15m"
   refresh_token_duration: "24h"

@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"errors"
 
 	"github.com/krobus00/auth-service/internal/model"
 	"github.com/krobus00/auth-service/internal/utils"
@@ -74,6 +75,9 @@ func (uc *userUsecase) Login(ctx context.Context, payload *model.UserLoginPayloa
 	user, err := uc.findUserByUsernameOrEmail(ctx, payload.Username)
 	if err != nil {
 		logger.Error(err.Error())
+		if errors.Is(err, model.ErrUserNotFound) {
+			return nil, model.ErrWrongUsernameOrPassword
+		}
 		return nil, err
 	}
 

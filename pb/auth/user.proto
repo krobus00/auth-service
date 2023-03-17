@@ -11,8 +11,28 @@ message User {
   string updated_at = 5;
 }
 
-message AuthRequest {
-  string AccessToken = 1;
+message GetUserInfoRequest {
+  string user_id = 1;
+}
+
+message RegisterRequest {
+  string email = 1;
+  string username = 2;
+  string password = 3;
+}
+
+message LoginRequest {
+  string username = 1;
+  string password = 2;
+}
+
+message RefreshTokenRequest {
+  string refresh_token = 1;
+}
+
+message AuthResponse {
+  string access_token = 1;
+  string refresh_token = 2;
 }
 
 message HasAccessRequest {

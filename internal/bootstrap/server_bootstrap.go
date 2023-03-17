@@ -7,10 +7,9 @@ import (
 	"time"
 
 	"github.com/krobus00/auth-service/internal/config"
-	grpcServer "github.com/krobus00/auth-service/internal/delivery/grpc"
-	"github.com/krobus00/auth-service/internal/delivery/http"
 	"github.com/krobus00/auth-service/internal/infrastructure"
 	"github.com/krobus00/auth-service/internal/repository"
+	grpcServer "github.com/krobus00/auth-service/internal/transport/grpc"
 	"github.com/krobus00/auth-service/internal/usecase"
 	pb "github.com/krobus00/auth-service/pb/auth"
 	log "github.com/sirupsen/logrus"
@@ -27,8 +26,6 @@ func StartServer() {
 
 	redisClient, err := infrastructure.NewRedisClient()
 	continueOrFatal(err)
-
-	echo := infrastructure.NewEcho()
 
 	// init repository
 	userRepo := repository.NewUserRepository()
@@ -58,23 +55,6 @@ func StartServer() {
 	err = authUsecase.InjectUserAccessControlRepo(userAccessControlRepo)
 	continueOrFatal(err)
 
-	userCtrl := http.NewUserController()
-	err = userCtrl.InjectUserUsecase(userUsecase)
-	continueOrFatal(err)
-
-	httpMiddleware := http.NewHTTPMiddleware()
-	err = httpMiddleware.InjectTokenRepo(tokenRepo)
-	continueOrFatal(err)
-
-	httpDelivery := http.NewHTTPDelivery()
-	err = httpDelivery.InjectEcho(echo)
-	continueOrFatal(err)
-	err = httpDelivery.InjectHTTPMiddleware(httpMiddleware)
-	continueOrFatal(err)
-	err = httpDelivery.InjectUserController(userCtrl)
-	continueOrFatal(err)
-	httpDelivery.InitRoutes()
-
 	grpcDelivery := grpcServer.NewGRPCServer()
 	err = grpcDelivery.InjectUserUsecase(userUsecase)
 	continueOrFatal(err)
@@ -90,11 +70,6 @@ func StartServer() {
 	lis, _ := net.Listen("tcp", ":"+config.GRPCport())
 
 	go func() {
-		_ = echo.Start(":" + config.HTTPPort())
-	}()
-	log.Info(fmt.Sprintf("http server started on :%s", config.HTTPPort()))
-
-	go func() {
 		_ = authGrpcServer.Serve(lis)
 	}()
 	log.Info(fmt.Sprintf("grpc server started on :%s", config.GRPCport()))
@@ -107,13 +82,9 @@ func StartServer() {
 			infrastructure.StopTickerCh <- true
 			return db.Close()
 		},
-		"http": func(ctx context.Context) error {
-			return echo.Shutdown(ctx)
-		},
 		"grpc": func(ctx context.Context) error {
 			return lis.Close()
 		},
 	})
-
 	<-wait
 }

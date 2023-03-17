@@ -7,6 +7,10 @@ import "google/protobuf/wrappers.proto";
 import "pb/auth/user.proto";
 
 service AuthService {
-	rpc GetUserInfo(AuthRequest) returns (User) {}
+	rpc GetUserInfo(GetUserInfoRequest) returns (User) {}
 	rpc HasAccess(HasAccessRequest) returns (google.protobuf.BoolValue) {}
+
+	rpc Login(LoginRequest) returns (AuthResponse) {}
+	rpc Register(RegisterRequest) returns (AuthResponse) {}
+	rpc RefreshToken(RefreshTokenRequest) returns (AuthResponse) {}
 }

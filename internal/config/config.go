@@ -5,23 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
-
-// GetConf :nodoc:
-func GetConf() {
-	viper.AddConfigPath(".")
-	viper.AddConfigPath("./..")
-	viper.AddConfigPath("./../..")
-	viper.SetConfigName("config")
-
-	viper.AutomaticEnv()
-	err := viper.ReadInConfig()
-	if err != nil {
-		logrus.Warningf("%v", err)
-	}
-}
 
 // Env :nodoc:
 func Env() string {
@@ -31,11 +16,6 @@ func Env() string {
 // LogLevel :nodoc:
 func LogLevel() string {
 	return viper.GetString("log_level")
-}
-
-// HTTPPort :nodoc:
-func HTTPPort() string {
-	return viper.GetString("ports.http")
 }
 
 // GRPCPort :nodoc:
@@ -172,12 +152,15 @@ func RefreshTokenDuration() time.Duration {
 	return parseDuration(cfg, 24*time.Hour)
 }
 
+// BcryptCost :nodoc:
 func BcryptCost() int {
 	if viper.GetInt("bcrypt.cost") > 4 && viper.GetInt("bcrypt.cost") < 31 {
 		return viper.GetInt("redis.bcrypt.cost")
 	}
 	return 10
 }
+
+// BcryptSalt :nodoc:
 func BcryptSalt() string {
 	return viper.GetString("bcrypt.salt")
 }

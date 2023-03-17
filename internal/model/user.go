@@ -100,6 +100,13 @@ func (res *AuthResponse) ToHTTPResponse() *HTTPAuthResponse {
 	}
 }
 
+func (res *AuthResponse) ToGRPCResponse() *pb.AuthResponse {
+	return &pb.AuthResponse{
+		AccessToken:  res.AccessToken,
+		RefreshToken: res.RefreshToken,
+	}
+}
+
 // UserInfoResponse :nodoc:
 type UserInfoResponse struct {
 	ID        string

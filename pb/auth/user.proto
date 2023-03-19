@@ -5,10 +5,11 @@ option go_package = "pb/auth";
 
 message User {
   string id = 1;
-  string username = 2;
-  string email = 3;
-  string created_at = 4;
-  string updated_at = 5;
+  string full_name = 2;
+  string username = 3;
+  string email = 4;
+  string created_at = 5;
+  string updated_at = 6;
 }
 
 message GetUserInfoRequest {
@@ -16,9 +17,10 @@ message GetUserInfoRequest {
 }
 
 message RegisterRequest {
-  string email = 1;
-  string username = 2;
-  string password = 3;
+  string full_name = 1;
+  string email = 2;
+  string username = 3;
+  string password = 4;
 }
 
 message LoginRequest {

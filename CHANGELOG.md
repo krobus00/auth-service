@@ -15,3 +15,7 @@
 ### New Improvement
 - remove http service
 - add grpc error handler
+
+## [v0.2.2] - 2023-03-19
+### New Features
+- add full name column

@@ -15,6 +15,7 @@ var (
 
 type User struct {
 	ID        string
+	FullName  string
 	Username  string
 	Email     string
 	Password  string
@@ -26,6 +27,7 @@ type User struct {
 // HTTP DTO
 // HTTPUserRegistrationRequest :nodoc:
 type HTTPUserRegistrationRequest struct {
+	FullName string `json:"fullName"`
 	Username string `json:"username"`
 	Email    string `json:"email"`
 	Password string `json:"Password"`
@@ -33,6 +35,7 @@ type HTTPUserRegistrationRequest struct {
 
 func (req HTTPUserRegistrationRequest) ToPayload() *UserRegistrationPayload {
 	return &UserRegistrationPayload{
+		FullName: req.FullName,
 		Username: req.Username,
 		Email:    req.Email,
 		Password: req.Password,
@@ -61,6 +64,7 @@ type HTTPAuthResponse struct {
 // HTTPUserInfoResponse :nodoc:
 type HTTPUserInfoResponse struct {
 	ID        string     `json:"id"`
+	FullName  string     `json:"fullName"`
 	Username  string     `json:"username"`
 	Email     string     `json:"email"`
 	CreatedAt time.Time  `josn:"createdAt"`
@@ -71,6 +75,7 @@ type HTTPUserInfoResponse struct {
 // Usecase payload
 // UserRegistrationPayload :nodoc:
 type UserRegistrationPayload struct {
+	FullName string
 	Username string
 	Email    string
 	Password string
@@ -110,6 +115,7 @@ func (res *AuthResponse) ToGRPCResponse() *pb.AuthResponse {
 // UserInfoResponse :nodoc:
 type UserInfoResponse struct {
 	ID        string
+	FullName  string
 	Username  string
 	Email     string
 	CreatedAt time.Time
@@ -121,6 +127,7 @@ type UserInfoResponse struct {
 func (res *UserInfoResponse) ToHTTPResponse() *HTTPUserInfoResponse {
 	return &HTTPUserInfoResponse{
 		ID:        res.ID,
+		FullName:  res.FullName,
 		Username:  res.Username,
 		Email:     res.Email,
 		CreatedAt: res.CreatedAt,
@@ -134,6 +141,7 @@ func (res *UserInfoResponse) ToGRPCResponse() *pb.User {
 	updatedAt := res.UpdatedAt.Format(time.RFC3339Nano)
 	return &pb.User{
 		Id:        res.ID,
+		FullName:  res.FullName,
 		Username:  res.Username,
 		Email:     res.Email,
 		CreatedAt: createdAt,

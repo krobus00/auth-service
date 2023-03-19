@@ -58,6 +58,7 @@ func (t *Server) Login(ctx context.Context, req *pb.LoginRequest) (*pb.AuthRespo
 
 func (t *Server) Register(ctx context.Context, req *pb.RegisterRequest) (*pb.AuthResponse, error) {
 	result, err := t.userUC.Register(ctx, &model.UserRegistrationPayload{
+		FullName: req.GetFullName(),
 		Email:    req.GetEmail(),
 		Username: req.GetUsername(),
 		Password: req.GetPassword(),

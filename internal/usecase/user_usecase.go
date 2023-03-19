@@ -47,6 +47,7 @@ func (uc *userUsecase) Register(ctx context.Context, payload *model.UserRegistra
 
 	newUser := &model.User{
 		ID:       utils.GenerateUUID(),
+		FullName: payload.FullName,
 		Username: payload.Username,
 		Email:    payload.Email,
 		Password: hashedPassword,
@@ -109,6 +110,7 @@ func (uc *userUsecase) GetUserInfo(ctx context.Context, payload *model.GetUserIn
 	}
 	return &model.UserInfoResponse{
 		ID:        user.ID,
+		FullName:  user.FullName,
 		Username:  user.Username,
 		Email:     user.Email,
 		CreatedAt: user.CreatedAt,

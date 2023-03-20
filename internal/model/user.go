@@ -1,3 +1,5 @@
+//go:generate mockgen -destination=mock/mock_user_repository.go -package=mock github.com/krobus00/auth-service/internal/model UserRepository
+//go:generate mockgen -destination=mock/mock_user_usecase.go -package=mock github.com/krobus00/auth-service/internal/model UserUsecase
 package model
 
 import (

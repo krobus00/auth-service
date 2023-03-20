@@ -7,20 +7,32 @@ VERSION?=dev
 DOCKER_IMAGE_NAME=krobus00/${SERVICE_NAME}
 CONFIG?=./config.yml
 NAMESPACE?=default
+PROJECT_REPO=github.com/krobus00/${SERVICE_NAME}
 
 # make tidy
 tidy:
 	go mod tidy
 
+clean-up-mock:
+	rm -rf ./internal/model/mock
+
+
+pb/auth/mock/mock_auth_service_client.go:
+	mockgen -destination=pb/auth/mock/mock_auth_service_client.go -package=mock ${PROJECT_REPO}/pb/auth AuthServiceClient
+
+generate: clean-up-mock pb/auth/mock/mock_auth_service_client.go
+	go generate ./...
+
+
 # make proto
 proto:
-	protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. \
+	@protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. \
   		--go-grpc_opt=paths=source_relative pb/auth/*.proto
-	ls pb/auth/*.pb.go | xargs -n1 -IX bash -c 'sed s/,omitempty// X > X.tmp && mv X{.tmp,}'
+	@ls pb/auth/*.pb.go | xargs -n1 -IX bash -c 'sed s/,omitempty// X > X.tmp && mv X{.tmp,}'
 
 # make lint
 lint:
-	golangci-lint run --disable-all -E errcheck -E misspell -E revive -E goimports
+	@golangci-lint run --disable-all -E errcheck -E misspell -E revive -E goimports
 
 # make run-dev server, make run-dev worker
 run-dev:
@@ -30,7 +42,7 @@ else ifeq (worker, $(filter worker,$(MAKECMDGOALS)))
 	$(eval launch_args=worker $(launch_args))
 endif
 	air --build.cmd "go build -o bin/auth-service main.go" --build.bin "./bin/auth-service $(launch_args)"
-	
+
 # make build
 build:
 	# build binary file
@@ -50,7 +62,12 @@ image:
 # make deploy VERSION="vx.x.x" NAMESPACE="staging"
 # make deploy VERSION="vx.x.x" NAMESPACE="staging" CONFIG="./config-staging.yml"
 deploy:
-	helm upgrade --install auth-service ./deployments/helm/server-auth-service --set-file appConfig="${CONFIG}" --set app.container.version="${VERSION}" -n ${NAMESPACE}
+	@helm upgrade --install auth-service ./deployments/helm/server-auth-service --set-file appConfig="${CONFIG}" --set app.container.version="${VERSION}" -n ${NAMESPACE}
+
+# make coverage
+coverage:
+	@echo "total code coverage : "
+	@go tool cover -func cover.out | grep total | awk '{print substr($$3, 1, length($$3)-1)}'
 
 # make test
 test:

@@ -1,3 +1,5 @@
+//go:generate mockgen -destination=mock/mock_token_repository.go -package=mock github.com/krobus00/auth-service/internal/model TokenRepository
+
 package model
 
 import (

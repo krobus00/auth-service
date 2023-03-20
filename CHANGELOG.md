@@ -1,21 +1,62 @@
-# Auth Service
 
-## [v0.1.0] - 2023-03-08
-### New Feature
-- implement HTTP and GRPC service
-- implement JWT Auth
-- implement ACL
+<a name="v0.2.3"></a>
+## [v0.2.3](https://github.com/krobus00/auth-service/compare/v0.2.2...v0.2.3)
 
-## [v0.2.0] - 2023-03-09
-### New Feature
-- helm chart kubernetes deployment
-- add some command
+> 2023-03-20
 
-## [v0.2.1] - 2023-03-17
-### New Improvement
-- remove http service
-- add grpc error handler
+### Feature
 
-## [v0.2.2] - 2023-03-19
-### New Features
-- add full name column
+* add mock ([#9](https://github.com/krobus00/auth-service/issues/9))
+
+
+<a name="v0.2.2"></a>
+## [v0.2.2](https://github.com/krobus00/auth-service/compare/v0.2.1...v0.2.2)
+
+> 2023-03-19
+
+### Bump
+
+* update changelog
+
+### Feature
+
+* add full name ([#7](https://github.com/krobus00/auth-service/issues/7))
+
+
+<a name="v0.2.1"></a>
+## [v0.2.1](https://github.com/krobus00/auth-service/compare/v0.2.0...v0.2.1)
+
+> 2023-03-17
+
+### Bump
+
+* update changelog
+
+### Refactor
+
+* remove http service ([#5](https://github.com/krobus00/auth-service/issues/5))
+
+
+<a name="v0.2.0"></a>
+## [v0.2.0](https://github.com/krobus00/auth-service/compare/v0.1.0...v0.2.0)
+
+> 2023-03-09
+
+### Release
+
+* v0.2.0 ([#4](https://github.com/krobus00/auth-service/issues/4))
+
+
+<a name="v0.1.0"></a>
+## v0.1.0
+
+> 2023-03-08
+
+### Bump
+
+* add changelog
+
+### Feature
+
+* add acl
+

@@ -6,5 +6,5 @@ const (
 	KeyDBCtx     ctxKey = "DB"
 	KeyUserIDCtx ctxKey = "USERID"
 
-	SYSTEM_ID = string("SYSTEM")
+	SystemID = string("SYSTEM")
 )

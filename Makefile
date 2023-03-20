@@ -85,5 +85,9 @@ else
 	richgo test $(cover_args)
 endif
 
+# make changelog VERSION=vx.x.x
+changelog:
+	git-chglog -o CHANGELOG.md --next-tag $(VERSION)
+
 %:
 	@:

@@ -1,4 +1,3 @@
-
 package main
 
 import "github.com/krobus00/auth-service/cmd"

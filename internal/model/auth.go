@@ -1,3 +1,4 @@
+//go:generate mockgen -destination=mock/mock_auth_usecase.go -package=mock github.com/krobus00/auth-service/internal/model AuthUsecase
 package model
 
 import (

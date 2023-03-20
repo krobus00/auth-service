@@ -1,3 +1,4 @@
+//go:generate mockgen -destination=mock/mock_user_access_control_repository.go -package=mock github.com/krobus00/auth-service/internal/model UserAccessControlRepository
 package model
 
 import (

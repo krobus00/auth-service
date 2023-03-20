@@ -16,7 +16,7 @@ func NewAuthUsecase() model.AuthUsecase {
 }
 
 func (uc *authUsecase) HasAccess(ctx context.Context, userID string, accessList []string) error {
-	if userID == constant.SYSTEM_ID {
+	if userID == constant.SystemID {
 		return nil
 	}
 	err := uc.userAccessControlRepo.HasAccess(ctx, userID, accessList)

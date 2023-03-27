@@ -2,6 +2,7 @@ package grpc
 
 import (
 	"context"
+	"time"
 
 	"github.com/golang/protobuf/ptypes/wrappers"
 	"github.com/krobus00/auth-service/internal/model"
@@ -24,6 +25,11 @@ func NewGRPCServer() *Server {
 }
 
 func (t *Server) GetUserInfo(ctx context.Context, req *pb.GetUserInfoRequest) (*pb.User, error) {
+	defer func(tn time.Time) {
+		_, _, fn := utils.Trace()
+		utils.TimeTrack(tn, fn)
+	}(time.Now())
+
 	res, err := t.userUC.GetUserInfo(ctx, &model.GetUserInfoPayload{
 		ID: req.GetUserId(),
 	})
@@ -34,6 +40,11 @@ func (t *Server) GetUserInfo(ctx context.Context, req *pb.GetUserInfoRequest) (*
 }
 
 func (t *Server) HasAccess(ctx context.Context, req *pb.HasAccessRequest) (*wrappers.BoolValue, error) {
+	defer func(tn time.Time) {
+		_, _, fn := utils.Trace()
+		utils.TimeTrack(tn, fn)
+	}(time.Now())
+
 	err := t.authUC.HasAccess(ctx, req.GetUserId(), req.GetAccessNames())
 	return &wrappers.BoolValue{
 		Value: err == nil,
@@ -42,6 +53,11 @@ func (t *Server) HasAccess(ctx context.Context, req *pb.HasAccessRequest) (*wrap
 }
 
 func (t *Server) Login(ctx context.Context, req *pb.LoginRequest) (*pb.AuthResponse, error) {
+	defer func(tn time.Time) {
+		_, _, fn := utils.Trace()
+		utils.TimeTrack(tn, fn)
+	}(time.Now())
+
 	result, err := t.userUC.Login(ctx, &model.UserLoginPayload{
 		Username: req.GetUsername(),
 		Password: req.GetPassword(),
@@ -57,6 +73,11 @@ func (t *Server) Login(ctx context.Context, req *pb.LoginRequest) (*pb.AuthRespo
 }
 
 func (t *Server) Register(ctx context.Context, req *pb.RegisterRequest) (*pb.AuthResponse, error) {
+	defer func(tn time.Time) {
+		_, _, fn := utils.Trace()
+		utils.TimeTrack(tn, fn)
+	}(time.Now())
+
 	result, err := t.userUC.Register(ctx, &model.UserRegistrationPayload{
 		FullName: req.GetFullName(),
 		Email:    req.GetEmail(),
@@ -74,6 +95,11 @@ func (t *Server) Register(ctx context.Context, req *pb.RegisterRequest) (*pb.Aut
 }
 
 func (t *Server) RefreshToken(ctx context.Context, req *pb.RefreshTokenRequest) (*pb.AuthResponse, error) {
+	defer func(tn time.Time) {
+		_, _, fn := utils.Trace()
+		utils.TimeTrack(tn, fn)
+	}(time.Now())
+
 	token, err := utils.ParseToken(req.GetRefreshToken())
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())

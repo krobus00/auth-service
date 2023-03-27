@@ -7,8 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
-// InjectDB :nodoc:
-func (r *userAccessControlRepository) InjectDB(db *gorm.DB) error {
+func (r *groupPermissionRepo) InjectDB(db *gorm.DB) error {
 	if db == nil {
 		return errors.New("invalid db")
 	}
@@ -16,11 +15,10 @@ func (r *userAccessControlRepository) InjectDB(db *gorm.DB) error {
 	return nil
 }
 
-// InjectRedisClient :nodoc:
-func (r *userAccessControlRepository) InjectRedisClient(client *goredis.Client) error {
+func (r *groupPermissionRepo) InjectRedisClient(client *goredis.Client) error {
 	if client == nil {
 		return errors.New("invalid redis client")
 	}
-	r.redis = client
+	r.redisClient = client
 	return nil
 }

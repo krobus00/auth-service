@@ -15,6 +15,7 @@ tidy:
 
 clean-up-mock:
 	rm -rf ./internal/model/mock
+	rm -rf ./pb/auth.mock
 
 
 pb/auth/mock/mock_auth_service_client.go:

@@ -11,6 +11,6 @@ func (r *tokenRepository) InjectRedisClient(client *goredis.Client) error {
 	if client == nil {
 		return errors.New("invalid redis client")
 	}
-	r.redis = client
+	r.redisClient = client
 	return nil
 }

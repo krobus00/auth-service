@@ -6,11 +6,10 @@ import (
 	"github.com/krobus00/auth-service/internal/model"
 )
 
-func (uc *authUsecase) InjectUserAccessControlRepo(repo model.UserAccessControlRepository) error {
-
+func (uc *authUsecase) InjectUserGroupRepo(repo model.UserGroupRepository) error {
 	if repo == nil {
-		return errors.New("invalid user access control repo")
+		return errors.New("invalid user group repository")
 	}
-	uc.userAccessControlRepo = repo
+	uc.userGroupRepo = repo
 	return nil
 }

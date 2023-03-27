@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 
+	"github.com/go-redis/redis/v8"
+	"github.com/goccy/go-json"
 	"github.com/krobus00/auth-service/internal/model"
 	"github.com/krobus00/auth-service/internal/utils"
 	log "github.com/sirupsen/logrus"
@@ -11,7 +13,8 @@ import (
 )
 
 type userRepository struct {
-	db *gorm.DB
+	db          *gorm.DB
+	redisClient *redis.Client
 }
 
 // NewUserRepository :nodoc:
@@ -35,6 +38,8 @@ func (r *userRepository) Create(ctx context.Context, user *model.User) error {
 		return err
 	}
 
+	_ = DeleteByKeys(ctx, r.redisClient, model.GetUserCacheKeys(user.ID, user.Username, user.Email))
+
 	return nil
 }
 
@@ -44,15 +49,36 @@ func (r *userRepository) FindByID(ctx context.Context, id string) (*model.User, 
 		"id": id,
 	})
 	user := new(model.User)
+	cacheKey := model.NewUserCacheKeyByID(id)
+	cachedData, err := Get(ctx, r.redisClient, cacheKey)
+	if err != nil {
+		logger.Error(err.Error())
+	}
+	err = json.Unmarshal(cachedData, &user)
+	if err == nil {
+		return user, nil
+	}
+
+	user = new(model.User)
 
 	db := utils.GetTxFromContext(ctx, r.db)
-	err := db.WithContext(ctx).Take(user, "id = ?", id).Error
+	err = db.WithContext(ctx).Take(user, "id = ?", id).Error
+
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
+			err = SetWithExpiry(ctx, r.redisClient, cacheKey, nil)
+			if err != nil {
+				logger.Error(err.Error())
+			}
 			return nil, nil
 		}
 		logger.Error(err.Error())
 		return nil, err
+	}
+
+	err = SetWithExpiry(ctx, r.redisClient, cacheKey, user)
+	if err != nil {
+		logger.Error(err.Error())
 	}
 
 	return user, nil
@@ -65,36 +91,75 @@ func (r *userRepository) FindByUsername(ctx context.Context, username string) (*
 	})
 	user := new(model.User)
 
+	cacheKey := model.NewUserCacheKeyByUsername(username)
+	cachedData, err := Get(ctx, r.redisClient, cacheKey)
+	if err != nil {
+		logger.Error(err.Error())
+	}
+	err = json.Unmarshal(cachedData, &user)
+	if err == nil {
+		return user, nil
+	}
+
+	user = new(model.User)
+
 	db := utils.GetTxFromContext(ctx, r.db)
-	err := db.WithContext(ctx).Take(user, "username = ?", username).Error
+	err = db.WithContext(ctx).Take(user, "username = ?", username).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
+			err = SetWithExpiry(ctx, r.redisClient, cacheKey, nil)
+			if err != nil {
+				logger.Error(err.Error())
+			}
 			return nil, nil
 		}
 		logger.Error(err.Error())
 		return nil, err
 	}
 
+	err = SetWithExpiry(ctx, r.redisClient, cacheKey, user)
+	if err != nil {
+		logger.Error(err.Error())
+	}
 	return user, nil
 }
 
-// FindByEmail:nodoc:
+// FindByEmail :nodoc:
 func (r *userRepository) FindByEmail(ctx context.Context, email string) (*model.User, error) {
 	logger := log.WithFields(log.Fields{
 		"email": email,
 	})
 	user := new(model.User)
+	cacheKey := model.NewUserCacheKeyByEmail(email)
+	cachedData, err := Get(ctx, r.redisClient, cacheKey)
+	if err != nil {
+		logger.Error(err.Error())
+	}
+	err = json.Unmarshal(cachedData, &user)
+	if err == nil {
+		return user, nil
+	}
+
+	user = new(model.User)
 
 	db := utils.GetTxFromContext(ctx, r.db)
-	err := db.WithContext(ctx).Take(user, "email = ?", email).Error
+	err = db.WithContext(ctx).Take(user, "email = ?", email).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
+			err = SetWithExpiry(ctx, r.redisClient, cacheKey, nil)
+			if err != nil {
+				logger.Error(err.Error())
+			}
 			return nil, nil
 		}
 		logger.Error(err.Error())
 		return nil, err
 	}
 
+	err = SetWithExpiry(ctx, r.redisClient, cacheKey, user)
+	if err != nil {
+		logger.Error(err.Error())
+	}
 	return user, nil
 }
 

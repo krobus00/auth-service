@@ -33,5 +33,4 @@ func init() {
 	if err := config.LoadConfig(); err != nil {
 		log.Fatalln(err.Error())
 	}
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

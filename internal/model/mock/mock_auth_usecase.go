@@ -49,16 +49,16 @@ func (mr *MockAuthUsecaseMockRecorder) HasAccess(arg0, arg1, arg2 interface{}) *
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HasAccess", reflect.TypeOf((*MockAuthUsecase)(nil).HasAccess), arg0, arg1, arg2)
 }
 
-// InjectUserAccessControlRepo mocks base method.
-func (m *MockAuthUsecase) InjectUserAccessControlRepo(arg0 model.UserAccessControlRepository) error {
+// InjectUserGroupRepo mocks base method.
+func (m *MockAuthUsecase) InjectUserGroupRepo(arg0 model.UserGroupRepository) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "InjectUserAccessControlRepo", arg0)
+	ret := m.ctrl.Call(m, "InjectUserGroupRepo", arg0)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// InjectUserAccessControlRepo indicates an expected call of InjectUserAccessControlRepo.
-func (mr *MockAuthUsecaseMockRecorder) InjectUserAccessControlRepo(arg0 interface{}) *gomock.Call {
+// InjectUserGroupRepo indicates an expected call of InjectUserGroupRepo.
+func (mr *MockAuthUsecaseMockRecorder) InjectUserGroupRepo(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InjectUserAccessControlRepo", reflect.TypeOf((*MockAuthUsecase)(nil).InjectUserAccessControlRepo), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InjectUserGroupRepo", reflect.TypeOf((*MockAuthUsecase)(nil).InjectUserGroupRepo), arg0)
 }

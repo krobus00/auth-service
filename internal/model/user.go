@@ -5,8 +5,10 @@ package model
 import (
 	"context"
 	"errors"
+	"fmt"
 	"time"
 
+	goredis "github.com/go-redis/redis/v8"
 	pb "github.com/krobus00/auth-service/pb/auth"
 	"gorm.io/gorm"
 )
@@ -24,6 +26,26 @@ type User struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt *time.Time
+}
+
+func NewUserCacheKeyByID(id string) string {
+	return fmt.Sprintf("users:id:%s", id)
+}
+
+func NewUserCacheKeyByUsername(username string) string {
+	return fmt.Sprintf("users:username:%s", username)
+}
+
+func NewUserCacheKeyByEmail(email string) string {
+	return fmt.Sprintf("users:email:%s", email)
+}
+
+func GetUserCacheKeys(id string, username string, email string) []string {
+	return []string{
+		NewUserCacheKeyByID(id),
+		NewUserCacheKeyByUsername(username),
+		NewUserCacheKeyByEmail(email),
+	}
 }
 
 // HTTP DTO
@@ -174,6 +196,7 @@ type UserRepository interface {
 
 	// DI
 	InjectDB(db *gorm.DB) error
+	InjectRedisClient(client *goredis.Client) error
 }
 
 // UserUsecase :nodoc:

@@ -8,7 +8,7 @@ import (
 )
 
 // InjectDB :nodoc:
-func (r *userRepository) InjectDB(db *gorm.DB) error {
+func (r *groupRepository) InjectDB(db *gorm.DB) error {
 	if db == nil {
 		return errors.New("invalid db")
 	}
@@ -17,7 +17,7 @@ func (r *userRepository) InjectDB(db *gorm.DB) error {
 }
 
 // InjectRedisClient :nodoc:
-func (r *userRepository) InjectRedisClient(client *goredis.Client) error {
+func (r *groupRepository) InjectRedisClient(client *goredis.Client) error {
 	if client == nil {
 		return errors.New("invalid redis client")
 	}

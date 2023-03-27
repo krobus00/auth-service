@@ -21,8 +21,8 @@ type MyClaims struct {
 }
 
 type AuthUsecase interface {
-	HasAccess(ctx context.Context, userID string, accessList []string) error
+	HasAccess(ctx context.Context, userID string, permissions []string) error
 
 	// DI
-	InjectUserAccessControlRepo(repo UserAccessControlRepository) error
+	InjectUserGroupRepo(repo UserGroupRepository) error
 }

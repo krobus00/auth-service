@@ -31,15 +31,17 @@ func StartServer() {
 	userRepo := repository.NewUserRepository()
 	err = userRepo.InjectDB(infrastructure.DB)
 	continueOrFatal(err)
+	err = userRepo.InjectRedisClient(redisClient)
+	continueOrFatal(err)
 
 	tokenRepo := repository.NewTokenRepository()
 	err = tokenRepo.InjectRedisClient(redisClient)
 	continueOrFatal(err)
 
-	userAccessControlRepo := repository.NewUserAccessControlRepository()
-	err = userAccessControlRepo.InjectDB(infrastructure.DB)
+	userGroupRepo := repository.NewUserGroupRepository()
+	err = userGroupRepo.InjectDB(infrastructure.DB)
 	continueOrFatal(err)
-	err = userAccessControlRepo.InjectRedisClient(redisClient)
+	err = userGroupRepo.InjectRedisClient(redisClient)
 	continueOrFatal(err)
 
 	// init usecase
@@ -52,7 +54,7 @@ func StartServer() {
 	continueOrFatal(err)
 
 	authUsecase := usecase.NewAuthUsecase()
-	err = authUsecase.InjectUserAccessControlRepo(userAccessControlRepo)
+	err = authUsecase.InjectUserGroupRepo(userGroupRepo)
 	continueOrFatal(err)
 
 	grpcDelivery := grpcServer.NewGRPCServer()

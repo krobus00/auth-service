@@ -227,7 +227,6 @@ func Test_groupPermissionRepo_FindByGroupIDAndPermissionID(t *testing.T) {
 }
 
 func Test_groupPermissionRepo_DeleteByGroupIDAndPermissionID(t *testing.T) {
-
 	type args struct {
 		groupID      string
 		permissionID string

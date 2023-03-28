@@ -15,12 +15,10 @@ type tokenRepository struct {
 	redisClient *goredis.Client
 }
 
-// NewTokenRepository :nodoc:
 func NewTokenRepository() model.TokenRepository {
 	return new(tokenRepository)
 }
 
-// Create :nodoc:
 func (r *tokenRepository) Create(ctx context.Context, userID string, tokenID string, tokenType model.TokenType) (string, error) {
 	var (
 		expDuration time.Duration
@@ -66,7 +64,6 @@ func (r *tokenRepository) Create(ctx context.Context, userID string, tokenID str
 	return token, nil
 }
 
-// IsValidToken :nodoc:
 func (r *tokenRepository) IsValidToken(ctx context.Context, userID string, tokenID string, tokenType model.TokenType) (bool, error) {
 	var (
 		cacheKey string
@@ -101,7 +98,6 @@ func (r *tokenRepository) IsValidToken(ctx context.Context, userID string, token
 	return true, nil
 }
 
-// Revoke :nodoc:
 func (r *tokenRepository) Revoke(ctx context.Context, userID string, tokenID string, tokenType model.TokenType) error {
 	var (
 		cacheKey string

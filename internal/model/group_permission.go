@@ -8,6 +8,10 @@ import (
 	"gorm.io/gorm"
 )
 
+const (
+	Errasdasd = "asd"
+)
+
 type GroupPermission struct {
 	GroupID      string
 	PermissionID string

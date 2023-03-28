@@ -401,7 +401,6 @@ func Test_groupRepository_Update(t *testing.T) {
 }
 
 func Test_groupRepository_DeleteByID(t *testing.T) {
-
 	type args struct {
 		id string
 	}

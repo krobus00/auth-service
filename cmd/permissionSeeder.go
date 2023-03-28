@@ -5,7 +5,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// permissionSeederCmd represents the server command
+// permissionSeederCmd represents the server command.
 var permissionSeederCmd = &cobra.Command{
 	Use:   "permission-seeder",
 	Short: "A brief description of your command",

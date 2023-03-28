@@ -149,7 +149,6 @@ func (r *userGroupRepository) DeleteByUserIDAndGroupID(ctx context.Context, user
 }
 
 func (r *userGroupRepository) HasPermission(ctx context.Context, groupID string, permission string) (bool, error) {
-
 	db := utils.GetTxFromContext(ctx, r.db)
 	cacheBucketKey := utils.NewBucketKey(model.NewGroupPermissionCacheKey(groupID), permission)
 	found, hasAccess, _ := r.getHasPermissionCache(ctx, cacheBucketKey, permission)
@@ -179,7 +178,7 @@ func (r *userGroupRepository) HasPermission(ctx context.Context, groupID string,
 	return true, nil
 }
 
-func (r *userGroupRepository) getHasPermissionCache(ctx context.Context, bucketKey string, permission string) (found bool, hasAccess bool, err error) {
+func (r *userGroupRepository) getHasPermissionCache(ctx context.Context, bucketKey string, permission string) (bool, bool, error) {
 	result, err := r.redisClient.HGet(ctx, bucketKey, permission).Result()
 	if err != nil {
 		if errors.Is(err, context.Canceled) {

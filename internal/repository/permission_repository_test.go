@@ -401,7 +401,6 @@ func Test_permissionRepository_Update(t *testing.T) {
 }
 
 func Test_permissionRepository_DeleteByID(t *testing.T) {
-
 	type args struct {
 		id string
 	}

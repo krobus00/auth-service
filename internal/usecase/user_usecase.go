@@ -16,12 +16,10 @@ type userUsecase struct {
 	db        *gorm.DB
 }
 
-// NewUserUsecase :nodoc:
 func NewUserUsecase() model.UserUsecase {
 	return new(userUsecase)
 }
 
-// Register :nodoc:
 func (uc *userUsecase) Register(ctx context.Context, payload *model.UserRegistrationPayload) (*model.AuthResponse, error) {
 	logger := log.WithFields(log.Fields{
 		"username": payload.Username,
@@ -67,7 +65,6 @@ func (uc *userUsecase) Register(ctx context.Context, payload *model.UserRegistra
 	return token, tx.Commit().Error
 }
 
-// Login :nodoc:
 func (uc *userUsecase) Login(ctx context.Context, payload *model.UserLoginPayload) (*model.AuthResponse, error) {
 	logger := log.WithFields(log.Fields{
 		"username": payload.Username,
@@ -95,7 +92,6 @@ func (uc *userUsecase) Login(ctx context.Context, payload *model.UserLoginPayloa
 	return token, nil
 }
 
-// GetUserInfo :nodoc:
 func (uc *userUsecase) GetUserInfo(ctx context.Context, payload *model.GetUserInfoPayload) (*model.UserInfoResponse, error) {
 	logger := log.WithFields(log.Fields{
 		"id": payload.ID,
@@ -119,7 +115,6 @@ func (uc *userUsecase) GetUserInfo(ctx context.Context, payload *model.GetUserIn
 	}, nil
 }
 
-// RefreshToken :nodoc:
 func (uc *userUsecase) RefreshToken(ctx context.Context, payload *model.RefreshTokenPayload) (*model.AuthResponse, error) {
 	logger := log.WithFields(log.Fields{
 		"userID": payload.UserID,
@@ -146,7 +141,6 @@ func (uc *userUsecase) RefreshToken(ctx context.Context, payload *model.RefreshT
 	return token, nil
 }
 
-// Logout :nodoc:
 func (uc *userUsecase) Logout(ctx context.Context, payload *model.LogoutPayload) error {
 	_ = uc.tokenRepo.Revoke(ctx, payload.UserID, payload.TokenID, model.AccessToken)
 	_ = uc.tokenRepo.Revoke(ctx, payload.UserID, payload.TokenID, model.RefreshToken)

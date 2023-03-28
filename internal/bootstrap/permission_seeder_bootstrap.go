@@ -14,7 +14,10 @@ import (
 )
 
 func StartPermissionSeeder() {
-	ctx := context.Background()
+	var (
+		err error
+		ctx = context.Background()
+	)
 	// init infra
 	infrastructure.InitializeDBConn()
 	gormDB := infrastructure.DB
@@ -55,7 +58,7 @@ func StartPermissionSeeder() {
 		currentPermission, _ := permissionUsecase.FindByName(ctx, permission.Name)
 		if currentPermission == nil {
 			logrus.Info("created permission")
-			_, err := permissionUsecase.Create(ctx, permission)
+			_, err = permissionUsecase.Create(ctx, permission)
 			continueOrFatal(err)
 			logrus.Info(fmt.Sprintf("permission %s created", permission.Name))
 		} else {
@@ -78,7 +81,7 @@ func StartPermissionSeeder() {
 		currentGroup, _ := groupUsecase.FindByName(ctx, group.Name)
 		if currentGroup == nil {
 			logrus.Info("created group")
-			_, err := groupUsecase.Create(ctx, group)
+			_, err = groupUsecase.Create(ctx, group)
 			continueOrFatal(err)
 			logrus.Info(fmt.Sprintf("group %s created", group.Name))
 		} else {

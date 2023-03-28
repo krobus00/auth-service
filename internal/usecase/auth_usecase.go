@@ -31,7 +31,7 @@ func (uc *authUsecase) HasAccess(ctx context.Context, userID string, permissions
 		return err
 	}
 
-	if len(userGroups) <= 0 {
+	if len(userGroups) == 0 {
 		logger.Warn("user don't have any groups")
 		return model.ErrUnauthorizeAccess
 	}

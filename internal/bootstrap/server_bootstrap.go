@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"net"
-	"time"
 
 	"github.com/krobus00/auth-service/internal/config"
 	"github.com/krobus00/auth-service/internal/infrastructure"
@@ -76,7 +75,7 @@ func StartServer() {
 	}()
 	log.Info(fmt.Sprintf("grpc server started on :%s", config.GRPCport()))
 
-	wait := gracefulShutdown(context.Background(), 30*time.Second, map[string]operation{
+	wait := gracefulShutdown(context.Background(), config.GracefulShutdownTimeOut(), map[string]operation{
 		"redis connection": func(ctx context.Context) error {
 			return redisClient.Close()
 		},

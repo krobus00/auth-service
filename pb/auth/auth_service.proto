@@ -2,9 +2,8 @@ syntax = "proto3";
 package pb.auth;
 
 option go_package = "pb/auth";
-
-import "google/protobuf/wrappers.proto";
 import "pb/auth/user.proto";
+import "google/protobuf/wrappers.proto";
 
 service AuthService {
 	rpc GetUserInfo(GetUserInfoRequest) returns (User) {}

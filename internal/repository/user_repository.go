@@ -17,12 +17,10 @@ type userRepository struct {
 	redisClient *redis.Client
 }
 
-// NewUserRepository :nodoc:
 func NewUserRepository() model.UserRepository {
 	return new(userRepository)
 }
 
-// Create :nodoc:
 func (r *userRepository) Create(ctx context.Context, user *model.User) error {
 	logger := log.WithFields(log.Fields{
 		"id":       user.ID,
@@ -43,7 +41,6 @@ func (r *userRepository) Create(ctx context.Context, user *model.User) error {
 	return nil
 }
 
-// FindByID :nodoc:
 func (r *userRepository) FindByID(ctx context.Context, id string) (*model.User, error) {
 	logger := log.WithFields(log.Fields{
 		"id": id,
@@ -84,7 +81,6 @@ func (r *userRepository) FindByID(ctx context.Context, id string) (*model.User, 
 	return user, nil
 }
 
-// FindByUsername :nodoc:
 func (r *userRepository) FindByUsername(ctx context.Context, username string) (*model.User, error) {
 	logger := log.WithFields(log.Fields{
 		"username": username,
@@ -124,7 +120,6 @@ func (r *userRepository) FindByUsername(ctx context.Context, username string) (*
 	return user, nil
 }
 
-// FindByEmail :nodoc:
 func (r *userRepository) FindByEmail(ctx context.Context, email string) (*model.User, error) {
 	logger := log.WithFields(log.Fields{
 		"email": email,

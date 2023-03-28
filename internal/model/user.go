@@ -49,7 +49,7 @@ func GetUserCacheKeys(id string, username string, email string) []string {
 }
 
 // HTTP DTO
-// HTTPUserRegistrationRequest :nodoc:
+
 type HTTPUserRegistrationRequest struct {
 	FullName string `json:"fullName"`
 	Username string `json:"username"`
@@ -66,7 +66,6 @@ func (req HTTPUserRegistrationRequest) ToPayload() *UserRegistrationPayload {
 	}
 }
 
-// HTTPUserLoginRequest :nodoc:
 type HTTPUserLoginRequest struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
@@ -79,13 +78,11 @@ func (req HTTPUserLoginRequest) ToPayload() *UserLoginPayload {
 	}
 }
 
-// HTTPAuthResponse :nodoc:
 type HTTPAuthResponse struct {
 	AccessToken  string `json:"accessToken"`
 	RefreshToken string `json:"refreshToken"`
 }
 
-// HTTPUserInfoResponse :nodoc:
 type HTTPUserInfoResponse struct {
 	ID        string     `json:"id"`
 	FullName  string     `json:"fullName"`
@@ -97,7 +94,7 @@ type HTTPUserInfoResponse struct {
 }
 
 // Usecase payload
-// UserRegistrationPayload :nodoc:
+
 type UserRegistrationPayload struct {
 	FullName string
 	Username string
@@ -105,7 +102,6 @@ type UserRegistrationPayload struct {
 	Password string
 }
 
-// UserLoginPayload :nodoc:
 type UserLoginPayload struct {
 	Username string
 	Password string
@@ -115,13 +111,11 @@ type GetUserInfoPayload struct {
 	ID string
 }
 
-// AuthResponse :nodoc:
 type AuthResponse struct {
 	AccessToken  string
 	RefreshToken string
 }
 
-// ToHTTPResponse :nodoc:
 func (res *AuthResponse) ToHTTPResponse() *HTTPAuthResponse {
 	return &HTTPAuthResponse{
 		AccessToken:  res.AccessToken,
@@ -136,7 +130,6 @@ func (res *AuthResponse) ToGRPCResponse() *pb.AuthResponse {
 	}
 }
 
-// UserInfoResponse :nodoc:
 type UserInfoResponse struct {
 	ID        string
 	FullName  string
@@ -147,7 +140,6 @@ type UserInfoResponse struct {
 	DeletedAt *time.Time
 }
 
-// ToHTTPResponse :nodoc:
 func (res *UserInfoResponse) ToHTTPResponse() *HTTPUserInfoResponse {
 	return &HTTPUserInfoResponse{
 		ID:        res.ID,
@@ -173,19 +165,16 @@ func (res *UserInfoResponse) ToGRPCResponse() *pb.User {
 	}
 }
 
-// RefreshTokenPayload :nodoc:
 type RefreshTokenPayload struct {
 	UserID  string
 	TokenID string
 }
 
-// LogoutPayload :nodoc:
 type LogoutPayload struct {
 	UserID  string
 	TokenID string
 }
 
-// UserRepository :nodoc:
 type UserRepository interface {
 	Create(ctx context.Context, user *User) error
 	FindByID(ctx context.Context, id string) (*User, error)
@@ -199,7 +188,6 @@ type UserRepository interface {
 	InjectRedisClient(client *goredis.Client) error
 }
 
-// UserUsecase :nodoc:
 type UserUsecase interface {
 	Register(ctx context.Context, payload *UserRegistrationPayload) (*AuthResponse, error)
 	Login(ctx context.Context, payload *UserLoginPayload) (*AuthResponse, error)

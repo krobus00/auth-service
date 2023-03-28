@@ -14,7 +14,6 @@ var (
 	ErrUnauthorizeAccess           = errors.New("unautohirze access")
 )
 
-// MyClaims :nodoc:
 type MyClaims struct {
 	jwt.RegisteredClaims
 	UserID string `json:"userID"`

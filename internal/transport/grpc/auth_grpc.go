@@ -4,22 +4,20 @@ import (
 	"context"
 	"time"
 
-	"github.com/golang/protobuf/ptypes/wrappers"
 	"github.com/krobus00/auth-service/internal/model"
 	"github.com/krobus00/auth-service/internal/utils"
 	pb "github.com/krobus00/auth-service/pb/auth"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	wrapperspb "google.golang.org/protobuf/types/known/wrapperspb"
 )
 
-// Server :nodoc:
 type Server struct {
 	userUC model.UserUsecase
 	authUC model.AuthUsecase
 	pb.UnimplementedAuthServiceServer
 }
 
-// NewGRPCServer :nodoc:
 func NewGRPCServer() *Server {
 	return new(Server)
 }
@@ -39,17 +37,16 @@ func (t *Server) GetUserInfo(ctx context.Context, req *pb.GetUserInfoRequest) (*
 	return res.ToGRPCResponse(), nil
 }
 
-func (t *Server) HasAccess(ctx context.Context, req *pb.HasAccessRequest) (*wrappers.BoolValue, error) {
+func (t *Server) HasAccess(ctx context.Context, req *pb.HasAccessRequest) (*wrapperspb.BoolValue, error) {
 	defer func(tn time.Time) {
 		_, _, fn := utils.Trace()
 		utils.TimeTrack(tn, fn)
 	}(time.Now())
 
 	err := t.authUC.HasAccess(ctx, req.GetUserId(), req.GetAccessNames())
-	return &wrappers.BoolValue{
+	return &wrapperspb.BoolValue{
 		Value: err == nil,
 	}, err
-
 }
 
 func (t *Server) Login(ctx context.Context, req *pb.LoginRequest) (*pb.AuthResponse, error) {

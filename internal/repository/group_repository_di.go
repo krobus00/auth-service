@@ -7,7 +7,6 @@ import (
 	"gorm.io/gorm"
 )
 
-// InjectDB :nodoc:
 func (r *groupRepository) InjectDB(db *gorm.DB) error {
 	if db == nil {
 		return errors.New("invalid db")
@@ -16,7 +15,6 @@ func (r *groupRepository) InjectDB(db *gorm.DB) error {
 	return nil
 }
 
-// InjectRedisClient :nodoc:
 func (r *groupRepository) InjectRedisClient(client *goredis.Client) error {
 	if client == nil {
 		return errors.New("invalid redis client")

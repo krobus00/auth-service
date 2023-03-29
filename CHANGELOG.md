@@ -4,6 +4,14 @@
 
 > 2023-03-29
 
+### Bump
+
+* update changelog
+
+### Fix
+
+* migration command
+
 ### Hotfix
 
 * fix makefile

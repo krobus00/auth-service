@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/goccy/go-json"
 
@@ -179,16 +180,18 @@ func (r *userGroupRepository) HasPermission(ctx context.Context, groupID string,
 }
 
 func (r *userGroupRepository) getHasPermissionCache(ctx context.Context, bucketKey string, permission string) (found bool, hasAccess bool, err error) {
-	result, err := r.redisClient.HGet(ctx, bucketKey, permission).Bool()
+	result, err := r.redisClient.HGet(ctx, bucketKey, permission).Result()
 	if err != nil {
 		if errors.Is(err, context.Canceled) {
-			return true, false, nil
+			return false, false, nil
 		}
 		return false, false, err
 	}
+
+	err = json.Unmarshal([]byte(strings.Replace(result, "\"", "", 2)), &hasAccess)
 	if err != nil {
-		return true, false, err
+		return false, false, err
 	}
 
-	return result, true, nil
+	return true, hasAccess, nil
 }

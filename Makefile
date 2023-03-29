@@ -1,10 +1,9 @@
 launch_args=
-migration_args=
 test_args=-coverprofile cover.out && go tool cover -func cover.out
 cover_args=-cover -coverprofile=cover.out `go list ./...` && go tool cover -html=cover.out
 
 SERVICE_NAME=auth-service
-VERSION?=dev
+VERSION?= $(shell git describe --match 'v[0-9]*' --tags --always)
 DOCKER_IMAGE_NAME=krobus00/${SERVICE_NAME}
 CONFIG?=./config.yml
 NAMESPACE?=default
@@ -20,11 +19,11 @@ tidy:
 # make clean-up-mock
 clean-up-mock:
 	rm -rf ./internal/model/mock
-	rm -rf ./pb/auth.mock
+	rm -rf ./pb/auth/mock
 
 
 pb/auth/mock/mock_auth_service_client.go:
-	mockgen -destination=pb/auth/mock/mock_auth_service_client.go -package=mock ${PROJECT_REPO}/pb/auth AuthServiceClient
+	mockgen -destination=pb/auth/mock/mock_auth_service_client.go -package=mock ${PROJECT_REPO}/pb/auth authServiceClient
 
 # make generate
 generate: clean-up-mock pb/auth/mock/mock_auth_service_client.go
@@ -52,10 +51,10 @@ lint:
 run:
 ifeq (dev server, $(filter dev server,$(MAKECMDGOALS)))
 	$(eval launch_args=server $(launch_args))
-	air --build.cmd "go build -o bin/auth-service main.go" --build.bin "./bin/auth-service $(launch_args)"
+	air --build.cmd 'go build -ldflags "-s -w -X main.version=$(VERSION) -X main.name=$(SERVICE_NAME)" -o bin/auth-service main.go' --build.bin "./bin/auth-service $(launch_args)"
 else ifeq (dev worker, $(filter dev worker,$(MAKECMDGOALS)))
 	$(eval launch_args=worker $(launch_args))
-	air --build.cmd "go build -o bin/auth-service main.go" --build.bin "./bin/auth-service $(launch_args)"
+	air --build.cmd 'go build -ldflags "-s -w -X main.version=$(VERSION) -X main.name=$(SERVICE_NAME)" -o bin/auth-service main.go' --build.bin "./bin/auth-service $(launch_args)"
 else ifeq (worker, $(filter worker,$(MAKECMDGOALS)))
 	$(eval launch_args=worker $(launch_args))
 	$(shell if test -s ./bin/auth-service; then ./bin/auth-service $(launch_args); else echo auth binary not found; fi)
@@ -63,7 +62,7 @@ else ifeq (server, $(filter server,$(MAKECMDGOALS)))
 	$(eval launch_args=server $(launch_args))
 	$(shell if test -s ./bin/auth-service; then ./bin/auth-service $(launch_args); else echo auth binary not found; fi)
 else ifeq (migration, $(filter migration,$(MAKECMDGOALS)))
-	$(shell if ! test -s ./bin/auth-service; then go build -ldflags "-s -w" -o ./bin/auth-service ./main.go; fi)
+	$(shell if ! test -s ./bin/auth-service; then go build -ldflags "-s -w -X main.version=$(VERSION) -X main.name=$(SERVICE_NAME)"  -o ./bin/auth-service ./main.go; fi)
 	$(eval launch_args=migration --action $(MIGRATION_ACTION) --name $(MIGRATION_NAME) --step $(MIGRATION_STEP) $(launch_args))
 	./bin/auth-service $(launch_args)
 endif
@@ -71,7 +70,7 @@ endif
 # make build
 build:
 	# build binary file
-	go build -ldflags "-s -w" -o ./bin/auth-service ./main.go
+	go build -ldflags "-s -w -X main.version=$(VERSION) -X main.name=$(SERVICE_NAME)" -o ./bin/auth-service ./main.go
 ifeq (, $(shell which upx))
 	$(warning "upx not installed")
 else

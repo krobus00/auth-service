@@ -110,7 +110,7 @@ else
 endif
 
 # make cover
-cover: test
+cover:
 ifeq (, $(shell which richgo))
 	go test $(cover_args)
 else

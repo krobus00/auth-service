@@ -29,9 +29,22 @@ func (uc *userUsecase) Register(ctx context.Context, payload *model.UserRegistra
 		"username": payload.Username,
 		"email":    payload.Email,
 	})
+	tx := uc.db.Begin(&sql.TxOptions{Isolation: sql.LevelRepeatableRead})
+	defer func() {
+		if p := recover(); p != nil {
+			_ = tx.Rollback()
+		}
+		_ = tx.Commit()
+	}()
+	err := tx.Error
+	if err != nil {
+		return nil, err
+	}
+	ctx = utils.NewTxContext(ctx, tx)
 
 	isUsernameOrEmailExist, err := uc.isUsernameOrEmailExist(ctx, payload.Username, payload.Email)
 	if err != nil {
+		logger.Error(err.Error())
 		return nil, err
 	}
 	if isUsernameOrEmailExist {
@@ -43,19 +56,6 @@ func (uc *userUsecase) Register(ctx context.Context, payload *model.UserRegistra
 		logger.Error(err.Error())
 		return nil, err
 	}
-
-	tx := uc.db.Begin(&sql.TxOptions{Isolation: sql.LevelRepeatableRead})
-	defer func() {
-		if p := recover(); p != nil {
-			_ = tx.Rollback()
-			panic(p)
-		}
-		if err != nil {
-			_ = tx.Rollback()
-		}
-		_ = tx.Commit()
-	}()
-	ctx = utils.NewTxContext(ctx, tx)
 
 	newUser := &model.User{
 		ID:       utils.GenerateUUID(),
@@ -137,7 +137,8 @@ func (uc *userUsecase) GetUserInfo(ctx context.Context, payload *model.GetUserIn
 
 func (uc *userUsecase) RefreshToken(ctx context.Context, payload *model.RefreshTokenPayload) (*model.AuthResponse, error) {
 	logger := log.WithFields(log.Fields{
-		"userID": payload.UserID,
+		"userID":  payload.UserID,
+		"tokenID": payload.TokenID,
 	})
 
 	isValidToken, err := uc.tokenRepo.IsValidToken(ctx, payload.UserID, payload.TokenID, model.RefreshToken)
@@ -149,8 +150,16 @@ func (uc *userUsecase) RefreshToken(ctx context.Context, payload *model.RefreshT
 		return nil, model.ErrTokenInvalid
 	}
 
-	_ = uc.tokenRepo.Revoke(ctx, payload.UserID, payload.TokenID, model.AccessToken)
-	_ = uc.tokenRepo.Revoke(ctx, payload.UserID, payload.TokenID, model.RefreshToken)
+	err = uc.tokenRepo.Revoke(ctx, payload.UserID, payload.TokenID, model.AccessToken)
+	if err != nil {
+		logger.Error(err.Error())
+		return nil, err
+	}
+	err = uc.tokenRepo.Revoke(ctx, payload.UserID, payload.TokenID, model.RefreshToken)
+	if err != nil {
+		logger.Error(err.Error())
+		return nil, err
+	}
 
 	token, err := uc.generateToken(ctx, payload.UserID)
 	if err != nil {
@@ -162,8 +171,21 @@ func (uc *userUsecase) RefreshToken(ctx context.Context, payload *model.RefreshT
 }
 
 func (uc *userUsecase) Logout(ctx context.Context, payload *model.UserLogoutPayload) error {
-	_ = uc.tokenRepo.Revoke(ctx, payload.UserID, payload.TokenID, model.AccessToken)
-	_ = uc.tokenRepo.Revoke(ctx, payload.UserID, payload.TokenID, model.RefreshToken)
+	logger := log.WithFields(log.Fields{
+		"userID":  payload.UserID,
+		"tokenID": payload.TokenID,
+	})
+
+	err := uc.tokenRepo.Revoke(ctx, payload.UserID, payload.TokenID, model.AccessToken)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+	err = uc.tokenRepo.Revoke(ctx, payload.UserID, payload.TokenID, model.RefreshToken)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
 
 	return nil
 }
@@ -210,7 +232,7 @@ func (uc *userUsecase) isUsernameOrEmailExist(ctx context.Context, username stri
 	if user != nil {
 		return true, nil
 	}
-	user, err = uc.userRepo.FindByEmail(ctx, username)
+	user, err = uc.userRepo.FindByEmail(ctx, email)
 	if err != nil {
 		return false, err
 	}

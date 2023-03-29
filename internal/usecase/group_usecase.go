@@ -45,7 +45,7 @@ func (uc *groupUsecase) Create(ctx context.Context, payload *model.CreateGroupPa
 		return nil, err
 	}
 	if existingGroup != nil {
-		return existingGroup, model.ErrGroupAlreadyExist
+		return nil, model.ErrGroupAlreadyExist
 	}
 
 	data := &model.Group{
@@ -195,6 +195,7 @@ func (uc *groupUsecase) DeleteByID(ctx context.Context, payload *model.DeleteGro
 	if group == nil {
 		return model.ErrGroupNotFound
 	}
+
 	err = uc.groupRepo.DeleteByID(ctx, payload.ID)
 	if err != nil {
 		logger.Error(err.Error())

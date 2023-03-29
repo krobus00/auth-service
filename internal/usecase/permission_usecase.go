@@ -45,7 +45,7 @@ func (uc *permissionUsecase) Create(ctx context.Context, payload *model.CreatePe
 		return nil, err
 	}
 	if existingPermission != nil {
-		return existingPermission, model.ErrGroupPermissionAlreadyExist
+		return nil, model.ErrGroupPermissionAlreadyExist
 	}
 
 	data := &model.Permission{
@@ -195,6 +195,7 @@ func (uc *permissionUsecase) DeleteByID(ctx context.Context, payload *model.Dele
 	if permission == nil {
 		return model.ErrPermissionNotFound
 	}
+
 	err = uc.permissionRepo.DeleteByID(ctx, payload.ID)
 	if err != nil {
 		logger.Error(err.Error())

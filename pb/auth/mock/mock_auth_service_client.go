@@ -11,6 +11,7 @@ import (
 	gomock "github.com/golang/mock/gomock"
 	auth "github.com/krobus00/auth-service/pb/auth"
 	grpc "google.golang.org/grpc"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	wrapperspb "google.golang.org/protobuf/types/known/wrapperspb"
 )
 
@@ -35,6 +36,306 @@ func NewMockAuthServiceClient(ctrl *gomock.Controller) *MockAuthServiceClient {
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockAuthServiceClient) EXPECT() *MockAuthServiceClientMockRecorder {
 	return m.recorder
+}
+
+// CreateGroup mocks base method.
+func (m *MockAuthServiceClient) CreateGroup(arg0 context.Context, arg1 *auth.CreateGroupRequest, arg2 ...grpc.CallOption) (*auth.Group, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "CreateGroup", varargs...)
+	ret0, _ := ret[0].(*auth.Group)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateGroup indicates an expected call of CreateGroup.
+func (mr *MockAuthServiceClientMockRecorder) CreateGroup(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateGroup", reflect.TypeOf((*MockAuthServiceClient)(nil).CreateGroup), varargs...)
+}
+
+// CreateGroupPermission mocks base method.
+func (m *MockAuthServiceClient) CreateGroupPermission(arg0 context.Context, arg1 *auth.CreateGroupPermissionRequest, arg2 ...grpc.CallOption) (*auth.GroupPermission, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "CreateGroupPermission", varargs...)
+	ret0, _ := ret[0].(*auth.GroupPermission)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateGroupPermission indicates an expected call of CreateGroupPermission.
+func (mr *MockAuthServiceClientMockRecorder) CreateGroupPermission(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateGroupPermission", reflect.TypeOf((*MockAuthServiceClient)(nil).CreateGroupPermission), varargs...)
+}
+
+// CreatePermission mocks base method.
+func (m *MockAuthServiceClient) CreatePermission(arg0 context.Context, arg1 *auth.CreatePermissionRequest, arg2 ...grpc.CallOption) (*auth.Permission, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "CreatePermission", varargs...)
+	ret0, _ := ret[0].(*auth.Permission)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreatePermission indicates an expected call of CreatePermission.
+func (mr *MockAuthServiceClientMockRecorder) CreatePermission(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreatePermission", reflect.TypeOf((*MockAuthServiceClient)(nil).CreatePermission), varargs...)
+}
+
+// CreateUserGroup mocks base method.
+func (m *MockAuthServiceClient) CreateUserGroup(arg0 context.Context, arg1 *auth.CreateUserGroupRequest, arg2 ...grpc.CallOption) (*auth.UserGroup, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "CreateUserGroup", varargs...)
+	ret0, _ := ret[0].(*auth.UserGroup)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateUserGroup indicates an expected call of CreateUserGroup.
+func (mr *MockAuthServiceClientMockRecorder) CreateUserGroup(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateUserGroup", reflect.TypeOf((*MockAuthServiceClient)(nil).CreateUserGroup), varargs...)
+}
+
+// DeleteGroupByID mocks base method.
+func (m *MockAuthServiceClient) DeleteGroupByID(arg0 context.Context, arg1 *auth.DeleteGroupRequest, arg2 ...grpc.CallOption) (*emptypb.Empty, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DeleteGroupByID", varargs...)
+	ret0, _ := ret[0].(*emptypb.Empty)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeleteGroupByID indicates an expected call of DeleteGroupByID.
+func (mr *MockAuthServiceClientMockRecorder) DeleteGroupByID(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteGroupByID", reflect.TypeOf((*MockAuthServiceClient)(nil).DeleteGroupByID), varargs...)
+}
+
+// DeleteGroupPermission mocks base method.
+func (m *MockAuthServiceClient) DeleteGroupPermission(arg0 context.Context, arg1 *auth.DeleteGroupPermissionRequest, arg2 ...grpc.CallOption) (*emptypb.Empty, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DeleteGroupPermission", varargs...)
+	ret0, _ := ret[0].(*emptypb.Empty)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeleteGroupPermission indicates an expected call of DeleteGroupPermission.
+func (mr *MockAuthServiceClientMockRecorder) DeleteGroupPermission(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteGroupPermission", reflect.TypeOf((*MockAuthServiceClient)(nil).DeleteGroupPermission), varargs...)
+}
+
+// DeletePermission mocks base method.
+func (m *MockAuthServiceClient) DeletePermission(arg0 context.Context, arg1 *auth.DeletePermissionRequest, arg2 ...grpc.CallOption) (*emptypb.Empty, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DeletePermission", varargs...)
+	ret0, _ := ret[0].(*emptypb.Empty)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeletePermission indicates an expected call of DeletePermission.
+func (mr *MockAuthServiceClientMockRecorder) DeletePermission(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeletePermission", reflect.TypeOf((*MockAuthServiceClient)(nil).DeletePermission), varargs...)
+}
+
+// DeleteUserGroup mocks base method.
+func (m *MockAuthServiceClient) DeleteUserGroup(arg0 context.Context, arg1 *auth.DeleteUserGroupRequest, arg2 ...grpc.CallOption) (*emptypb.Empty, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DeleteUserGroup", varargs...)
+	ret0, _ := ret[0].(*emptypb.Empty)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeleteUserGroup indicates an expected call of DeleteUserGroup.
+func (mr *MockAuthServiceClientMockRecorder) DeleteUserGroup(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteUserGroup", reflect.TypeOf((*MockAuthServiceClient)(nil).DeleteUserGroup), varargs...)
+}
+
+// FindAllUserGroups mocks base method.
+func (m *MockAuthServiceClient) FindAllUserGroups(arg0 context.Context, arg1 *auth.FindAllUserGroupsRequest, arg2 ...grpc.CallOption) (*auth.FindAllUserGroupsResponse, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "FindAllUserGroups", varargs...)
+	ret0, _ := ret[0].(*auth.FindAllUserGroupsResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindAllUserGroups indicates an expected call of FindAllUserGroups.
+func (mr *MockAuthServiceClientMockRecorder) FindAllUserGroups(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindAllUserGroups", reflect.TypeOf((*MockAuthServiceClient)(nil).FindAllUserGroups), varargs...)
+}
+
+// FindGroupByID mocks base method.
+func (m *MockAuthServiceClient) FindGroupByID(arg0 context.Context, arg1 *auth.FindGroupByIDRequest, arg2 ...grpc.CallOption) (*auth.Group, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "FindGroupByID", varargs...)
+	ret0, _ := ret[0].(*auth.Group)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindGroupByID indicates an expected call of FindGroupByID.
+func (mr *MockAuthServiceClientMockRecorder) FindGroupByID(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindGroupByID", reflect.TypeOf((*MockAuthServiceClient)(nil).FindGroupByID), varargs...)
+}
+
+// FindGroupByName mocks base method.
+func (m *MockAuthServiceClient) FindGroupByName(arg0 context.Context, arg1 *auth.FindGroupByNameRequest, arg2 ...grpc.CallOption) (*auth.Group, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "FindGroupByName", varargs...)
+	ret0, _ := ret[0].(*auth.Group)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindGroupByName indicates an expected call of FindGroupByName.
+func (mr *MockAuthServiceClientMockRecorder) FindGroupByName(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindGroupByName", reflect.TypeOf((*MockAuthServiceClient)(nil).FindGroupByName), varargs...)
+}
+
+// FindGroupPermission mocks base method.
+func (m *MockAuthServiceClient) FindGroupPermission(arg0 context.Context, arg1 *auth.FindGroupPermissionRequest, arg2 ...grpc.CallOption) (*auth.GroupPermission, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "FindGroupPermission", varargs...)
+	ret0, _ := ret[0].(*auth.GroupPermission)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindGroupPermission indicates an expected call of FindGroupPermission.
+func (mr *MockAuthServiceClientMockRecorder) FindGroupPermission(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindGroupPermission", reflect.TypeOf((*MockAuthServiceClient)(nil).FindGroupPermission), varargs...)
+}
+
+// FindPermissionByID mocks base method.
+func (m *MockAuthServiceClient) FindPermissionByID(arg0 context.Context, arg1 *auth.FindPermissionByIDRequest, arg2 ...grpc.CallOption) (*auth.Permission, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "FindPermissionByID", varargs...)
+	ret0, _ := ret[0].(*auth.Permission)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindPermissionByID indicates an expected call of FindPermissionByID.
+func (mr *MockAuthServiceClientMockRecorder) FindPermissionByID(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindPermissionByID", reflect.TypeOf((*MockAuthServiceClient)(nil).FindPermissionByID), varargs...)
+}
+
+// FindPermissionByName mocks base method.
+func (m *MockAuthServiceClient) FindPermissionByName(arg0 context.Context, arg1 *auth.FindPermissionByNameRequest, arg2 ...grpc.CallOption) (*auth.Permission, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "FindPermissionByName", varargs...)
+	ret0, _ := ret[0].(*auth.Permission)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindPermissionByName indicates an expected call of FindPermissionByName.
+func (mr *MockAuthServiceClientMockRecorder) FindPermissionByName(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindPermissionByName", reflect.TypeOf((*MockAuthServiceClient)(nil).FindPermissionByName), varargs...)
+}
+
+// FindUserGroup mocks base method.
+func (m *MockAuthServiceClient) FindUserGroup(arg0 context.Context, arg1 *auth.FindUserGroupRequest, arg2 ...grpc.CallOption) (*auth.UserGroup, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "FindUserGroup", varargs...)
+	ret0, _ := ret[0].(*auth.UserGroup)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindUserGroup indicates an expected call of FindUserGroup.
+func (mr *MockAuthServiceClientMockRecorder) FindUserGroup(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindUserGroup", reflect.TypeOf((*MockAuthServiceClient)(nil).FindUserGroup), varargs...)
 }
 
 // GetUserInfo mocks base method.
@@ -95,6 +396,26 @@ func (mr *MockAuthServiceClientMockRecorder) Login(arg0, arg1 interface{}, arg2 
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Login", reflect.TypeOf((*MockAuthServiceClient)(nil).Login), varargs...)
+}
+
+// Logout mocks base method.
+func (m *MockAuthServiceClient) Logout(arg0 context.Context, arg1 *auth.LogoutRequest, arg2 ...grpc.CallOption) (*emptypb.Empty, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Logout", varargs...)
+	ret0, _ := ret[0].(*emptypb.Empty)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Logout indicates an expected call of Logout.
+func (mr *MockAuthServiceClientMockRecorder) Logout(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Logout", reflect.TypeOf((*MockAuthServiceClient)(nil).Logout), varargs...)
 }
 
 // RefreshToken mocks base method.

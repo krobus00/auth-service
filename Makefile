@@ -23,7 +23,7 @@ clean-up-mock:
 
 
 pb/auth/mock/mock_auth_service_client.go:
-	mockgen -destination=pb/auth/mock/mock_auth_service_client.go -package=mock ${PROJECT_REPO}/pb/auth authServiceClient
+	mockgen -destination=pb/auth/mock/mock_auth_service_client.go -package=mock ${PROJECT_REPO}/pb/auth AuthServiceClient
 
 # make generate
 generate: clean-up-mock pb/auth/mock/mock_auth_service_client.go

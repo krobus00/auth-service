@@ -10,9 +10,8 @@ import (
 	"github.com/krobus00/auth-service/internal/model"
 )
 
-// GenerateToken :nodoc:
 func GenerateToken(tokenID string, userID string, expDuration time.Duration) (string, error) {
-	claims := model.MyClaims{
+	claims := model.JWTClaims{
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(expDuration)),
 			Issuer:    "auth-service",
@@ -32,7 +31,6 @@ func GenerateToken(tokenID string, userID string, expDuration time.Duration) (st
 	return accessToken, nil
 }
 
-// ParseToken :nodoc:
 func ParseToken(tokenString string) (*jwt.Token, error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if method, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
@@ -53,7 +51,6 @@ func ParseToken(tokenString string) (*jwt.Token, error) {
 	return token, nil
 }
 
-// GetUserID :nodoc:
 func GetUserID(token *jwt.Token) (string, error) {
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok {
@@ -64,10 +61,8 @@ func GetUserID(token *jwt.Token) (string, error) {
 		return "", model.ErrTokenInvalid
 	}
 	return fmt.Sprintf("%v", val), nil
-
 }
 
-// GetTokenID :nodoc:
 func GetTokenID(token *jwt.Token) (string, error) {
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok {

@@ -1,0 +1,30 @@
+syntax = "proto3";
+package pb.auth;
+
+option go_package = "pb/auth";
+
+message Permission {
+  string id = 1;
+  string name = 2;
+}
+
+message FindPermissionByIDRequest {
+  string session_user_id = 1;
+  string id = 2;
+}
+
+message FindPermissionByNameRequest {
+  string session_user_id = 1;
+  string name = 2;
+}
+
+message CreatePermissionRequest {
+  string session_user_id = 1;
+  string name = 2;
+}
+
+message DeletePermissionRequest {
+  string session_user_id = 1;
+  string id = 2;
+}
+

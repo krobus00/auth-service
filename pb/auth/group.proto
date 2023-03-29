@@ -1,0 +1,30 @@
+syntax = "proto3";
+package pb.auth;
+
+option go_package = "pb/auth";
+
+message Group {
+  string id = 1;
+  string name = 2;
+}
+
+message FindGroupByIDRequest {
+  string session_user_id = 1;
+  string id = 2;
+}
+
+message FindGroupByNameRequest {
+  string session_user_id = 1;
+  string name = 2;
+}
+
+message CreateGroupRequest {
+  string session_user_id = 1;
+  string name = 2;
+}
+
+message DeleteGroupRequest {
+  string session_user_id = 2;
+  string id = 1;
+}
+

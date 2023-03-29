@@ -7,7 +7,6 @@ import (
 	"gorm.io/gorm"
 )
 
-// InjectUserRepo :nodoc:
 func (uc *userUsecase) InjectUserRepo(repo model.UserRepository) error {
 	if repo == nil {
 		return errors.New("invalid user repo")
@@ -16,7 +15,6 @@ func (uc *userUsecase) InjectUserRepo(repo model.UserRepository) error {
 	return nil
 }
 
-// InjectTokenRepo :nodoc:
 func (uc *userUsecase) InjectTokenRepo(repo model.TokenRepository) error {
 	if repo == nil {
 		return errors.New("invalid token repo")
@@ -25,11 +23,26 @@ func (uc *userUsecase) InjectTokenRepo(repo model.TokenRepository) error {
 	return nil
 }
 
-// InjectDB :nodoc:
 func (uc *userUsecase) InjectDB(db *gorm.DB) error {
 	if db == nil {
 		return errors.New("invalid db")
 	}
 	uc.db = db
+	return nil
+}
+
+func (uc *userUsecase) InjectGroupRepo(repo model.GroupRepository) error {
+	if repo == nil {
+		return errors.New("invalid group repo")
+	}
+	uc.groupRepo = repo
+	return nil
+}
+
+func (uc *userUsecase) InjectUserGroupRepo(repo model.UserGroupRepository) error {
+	if repo == nil {
+		return errors.New("invalid user group repo")
+	}
+	uc.userGroupRepo = repo
 	return nil
 }

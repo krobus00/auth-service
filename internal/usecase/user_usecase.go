@@ -2,8 +2,10 @@ package usecase
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 
+	"github.com/krobus00/auth-service/internal/constant"
 	"github.com/krobus00/auth-service/internal/model"
 	"github.com/krobus00/auth-service/internal/utils"
 	log "github.com/sirupsen/logrus"
@@ -11,25 +13,38 @@ import (
 )
 
 type userUsecase struct {
-	userRepo  model.UserRepository
-	tokenRepo model.TokenRepository
-	db        *gorm.DB
+	userRepo      model.UserRepository
+	tokenRepo     model.TokenRepository
+	groupRepo     model.GroupRepository
+	userGroupRepo model.UserGroupRepository
+	db            *gorm.DB
 }
 
-// NewUserUsecase :nodoc:
 func NewUserUsecase() model.UserUsecase {
 	return new(userUsecase)
 }
 
-// Register :nodoc:
 func (uc *userUsecase) Register(ctx context.Context, payload *model.UserRegistrationPayload) (*model.AuthResponse, error) {
 	logger := log.WithFields(log.Fields{
 		"username": payload.Username,
 		"email":    payload.Email,
 	})
+	tx := uc.db.Begin(&sql.TxOptions{Isolation: sql.LevelRepeatableRead})
+	defer func() {
+		if p := recover(); p != nil {
+			_ = tx.Rollback()
+		}
+		_ = tx.Commit()
+	}()
+	err := tx.Error
+	if err != nil {
+		return nil, err
+	}
+	ctx = utils.NewTxContext(ctx, tx)
 
 	isUsernameOrEmailExist, err := uc.isUsernameOrEmailExist(ctx, payload.Username, payload.Email)
 	if err != nil {
+		logger.Error(err.Error())
 		return nil, err
 	}
 	if isUsernameOrEmailExist {
@@ -41,9 +56,6 @@ func (uc *userUsecase) Register(ctx context.Context, payload *model.UserRegistra
 		logger.Error(err.Error())
 		return nil, err
 	}
-
-	tx := uc.db.Begin()
-	ctx = utils.NewTxContext(ctx, tx)
 
 	newUser := &model.User{
 		ID:       utils.GenerateUUID(),
@@ -59,15 +71,20 @@ func (uc *userUsecase) Register(ctx context.Context, payload *model.UserRegistra
 		return nil, err
 	}
 
+	err = uc.addDefaultGroup(ctx, newUser.ID)
+	if err != nil {
+		logger.Error(err.Error())
+		return nil, err
+	}
+
 	token, err := uc.generateToken(ctx, newUser.ID)
 	if err != nil {
 		return nil, err
 	}
 
-	return token, tx.Commit().Error
+	return token, nil
 }
 
-// Login :nodoc:
 func (uc *userUsecase) Login(ctx context.Context, payload *model.UserLoginPayload) (*model.AuthResponse, error) {
 	logger := log.WithFields(log.Fields{
 		"username": payload.Username,
@@ -95,7 +112,6 @@ func (uc *userUsecase) Login(ctx context.Context, payload *model.UserLoginPayloa
 	return token, nil
 }
 
-// GetUserInfo :nodoc:
 func (uc *userUsecase) GetUserInfo(ctx context.Context, payload *model.GetUserInfoPayload) (*model.UserInfoResponse, error) {
 	logger := log.WithFields(log.Fields{
 		"id": payload.ID,
@@ -119,10 +135,10 @@ func (uc *userUsecase) GetUserInfo(ctx context.Context, payload *model.GetUserIn
 	}, nil
 }
 
-// RefreshToken :nodoc:
 func (uc *userUsecase) RefreshToken(ctx context.Context, payload *model.RefreshTokenPayload) (*model.AuthResponse, error) {
 	logger := log.WithFields(log.Fields{
-		"userID": payload.UserID,
+		"userID":  payload.UserID,
+		"tokenID": payload.TokenID,
 	})
 
 	isValidToken, err := uc.tokenRepo.IsValidToken(ctx, payload.UserID, payload.TokenID, model.RefreshToken)
@@ -134,8 +150,16 @@ func (uc *userUsecase) RefreshToken(ctx context.Context, payload *model.RefreshT
 		return nil, model.ErrTokenInvalid
 	}
 
-	_ = uc.tokenRepo.Revoke(ctx, payload.UserID, payload.TokenID, model.AccessToken)
-	_ = uc.tokenRepo.Revoke(ctx, payload.UserID, payload.TokenID, model.RefreshToken)
+	err = uc.tokenRepo.Revoke(ctx, payload.UserID, payload.TokenID, model.AccessToken)
+	if err != nil {
+		logger.Error(err.Error())
+		return nil, err
+	}
+	err = uc.tokenRepo.Revoke(ctx, payload.UserID, payload.TokenID, model.RefreshToken)
+	if err != nil {
+		logger.Error(err.Error())
+		return nil, err
+	}
 
 	token, err := uc.generateToken(ctx, payload.UserID)
 	if err != nil {
@@ -146,10 +170,22 @@ func (uc *userUsecase) RefreshToken(ctx context.Context, payload *model.RefreshT
 	return token, nil
 }
 
-// Logout :nodoc:
-func (uc *userUsecase) Logout(ctx context.Context, payload *model.LogoutPayload) error {
-	_ = uc.tokenRepo.Revoke(ctx, payload.UserID, payload.TokenID, model.AccessToken)
-	_ = uc.tokenRepo.Revoke(ctx, payload.UserID, payload.TokenID, model.RefreshToken)
+func (uc *userUsecase) Logout(ctx context.Context, payload *model.UserLogoutPayload) error {
+	logger := log.WithFields(log.Fields{
+		"userID":  payload.UserID,
+		"tokenID": payload.TokenID,
+	})
+
+	err := uc.tokenRepo.Revoke(ctx, payload.UserID, payload.TokenID, model.AccessToken)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
+	err = uc.tokenRepo.Revoke(ctx, payload.UserID, payload.TokenID, model.RefreshToken)
+	if err != nil {
+		logger.Error(err.Error())
+		return err
+	}
 
 	return nil
 }
@@ -196,7 +232,7 @@ func (uc *userUsecase) isUsernameOrEmailExist(ctx context.Context, username stri
 	if user != nil {
 		return true, nil
 	}
-	user, err = uc.userRepo.FindByEmail(ctx, username)
+	user, err = uc.userRepo.FindByEmail(ctx, email)
 	if err != nil {
 		return false, err
 	}
@@ -204,4 +240,23 @@ func (uc *userUsecase) isUsernameOrEmailExist(ctx context.Context, username stri
 		return true, nil
 	}
 	return false, nil
+}
+
+func (uc *userUsecase) addDefaultGroup(ctx context.Context, userID string) error {
+	group, err := uc.groupRepo.FindByName(ctx, constant.GroupDefault)
+	if err != nil {
+		return err
+	}
+	if group == nil {
+		return model.ErrGroupNotFound
+	}
+
+	err = uc.userGroupRepo.Create(ctx, &model.UserGroup{
+		UserID:  userID,
+		GroupID: group.ID,
+	})
+	if err != nil {
+		return err
+	}
+	return nil
 }

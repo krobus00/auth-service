@@ -1,4 +1,5 @@
 launch_args=
+migration_args=
 test_args=-coverprofile cover.out && go tool cover -func cover.out
 cover_args=-cover -coverprofile=cover.out `go list ./...` && go tool cover -html=cover.out
 
@@ -8,18 +9,24 @@ DOCKER_IMAGE_NAME=krobus00/${SERVICE_NAME}
 CONFIG?=./config.yml
 NAMESPACE?=default
 PROJECT_REPO=github.com/krobus00/${SERVICE_NAME}
+MIGRATION_ACTION?="up"
+MIGRATION_NAME?=""
+MIGRATION_STEP?="999"
 
 # make tidy
 tidy:
 	go mod tidy
 
+# make clean-up-mock
 clean-up-mock:
 	rm -rf ./internal/model/mock
+	rm -rf ./pb/auth.mock
 
 
 pb/auth/mock/mock_auth_service_client.go:
 	mockgen -destination=pb/auth/mock/mock_auth_service_client.go -package=mock ${PROJECT_REPO}/pb/auth AuthServiceClient
 
+# make generate
 generate: clean-up-mock pb/auth/mock/mock_auth_service_client.go
 	go generate ./...
 
@@ -32,16 +39,34 @@ proto:
 
 # make lint
 lint:
-	@golangci-lint run --disable-all -E errcheck -E misspell -E revive -E goimports
+	@golangci-lint run
 
-# make run-dev server, make run-dev worker
-run-dev:
-ifeq (server, $(filter server,$(MAKECMDGOALS)))
+# make run dev server
+# make run dev worker
+# make run server
+# make run worker
+# make run migration
+# make run migration MIGRATION_ACTION=up
+# make run migration MIGRATION_ACTION=create MIGRATION_NAME=create_table_products
+# make run migration MIGRATION_ACTION=up MIGRATION_STEP=1
+run:
+ifeq (dev server, $(filter dev server,$(MAKECMDGOALS)))
 	$(eval launch_args=server $(launch_args))
+	air --build.cmd "go build -o bin/auth-service main.go" --build.bin "./bin/auth-service $(launch_args)"
+else ifeq (dev worker, $(filter dev worker,$(MAKECMDGOALS)))
+	$(eval launch_args=worker $(launch_args))
+	air --build.cmd "go build -o bin/auth-service main.go" --build.bin "./bin/auth-service $(launch_args)"
 else ifeq (worker, $(filter worker,$(MAKECMDGOALS)))
 	$(eval launch_args=worker $(launch_args))
+	$(shell if test -s ./bin/auth-service; then ./bin/auth-service $(launch_args); else echo auth binary not found; fi)
+else ifeq (server, $(filter server,$(MAKECMDGOALS)))
+	$(eval launch_args=server $(launch_args))
+	$(shell if test -s ./bin/auth-service; then ./bin/auth-service $(launch_args); else echo auth binary not found; fi)
+else ifeq (migration, $(filter migration,$(MAKECMDGOALS)))
+	$(shell if ! test -s ./bin/auth-service; then go build -ldflags "-s -w" -o ./bin/auth-service ./main.go; fi)
+	$(eval launch_args=migration --action $(MIGRATION_ACTION) --name $(MIGRATION_NAME) --step $(MIGRATION_STEP) $(launch_args))
+	./bin/auth-service $(launch_args)
 endif
-	air --build.cmd "go build -o bin/auth-service main.go" --build.bin "./bin/auth-service $(launch_args)"
 
 # make build
 build:
@@ -57,6 +82,13 @@ endif
 # make image VERSION="vx.x.x"
 image:
 	docker build -t ${DOCKER_IMAGE_NAME}:${VERSION} . -f ./deployments/Dockerfile
+
+# make push-image VERSION="vx.x.x"
+push-image:
+	docker push ${DOCKER_IMAGE_NAME}:${VERSION}
+
+# make docker-build-push VERSION="vx.x.x"
+docker-build-push: image push-image
 
 # make deploy VERSION="vx.x.x"
 # make deploy VERSION="vx.x.x" NAMESPACE="staging"
@@ -78,7 +110,7 @@ else
 endif
 
 # make cover
-cover: test
+cover:
 ifeq (, $(shell which richgo))
 	go test $(cover_args)
 else

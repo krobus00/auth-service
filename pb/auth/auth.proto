@@ -1,0 +1,19 @@
+syntax = "proto3";
+package pb.auth;
+
+option go_package = "pb/auth";
+
+
+message GetUserInfoRequest {
+  string user_id = 1;
+}
+
+message HasAccessRequest {
+  string user_id = 1;
+  repeated string permissions = 2;
+}
+
+message RefreshTokenRequest {
+  string session_user_id = 1;
+  string token_id = 2;
+}

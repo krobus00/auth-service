@@ -2,8 +2,10 @@ package usecase
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 
+	"github.com/krobus00/auth-service/internal/constant"
 	"github.com/krobus00/auth-service/internal/model"
 	"github.com/krobus00/auth-service/internal/utils"
 	log "github.com/sirupsen/logrus"
@@ -11,9 +13,11 @@ import (
 )
 
 type userUsecase struct {
-	userRepo  model.UserRepository
-	tokenRepo model.TokenRepository
-	db        *gorm.DB
+	userRepo      model.UserRepository
+	tokenRepo     model.TokenRepository
+	groupRepo     model.GroupRepository
+	userGroupRepo model.UserGroupRepository
+	db            *gorm.DB
 }
 
 func NewUserUsecase() model.UserUsecase {
@@ -40,7 +44,17 @@ func (uc *userUsecase) Register(ctx context.Context, payload *model.UserRegistra
 		return nil, err
 	}
 
-	tx := uc.db.Begin()
+	tx := uc.db.Begin(&sql.TxOptions{Isolation: sql.LevelRepeatableRead})
+	defer func() {
+		if p := recover(); p != nil {
+			_ = tx.Rollback()
+			panic(p)
+		}
+		if err != nil {
+			_ = tx.Rollback()
+		}
+		_ = tx.Commit()
+	}()
 	ctx = utils.NewTxContext(ctx, tx)
 
 	newUser := &model.User{
@@ -57,12 +71,18 @@ func (uc *userUsecase) Register(ctx context.Context, payload *model.UserRegistra
 		return nil, err
 	}
 
+	err = uc.addDefaultGroup(ctx, newUser.ID)
+	if err != nil {
+		logger.Error(err.Error())
+		return nil, err
+	}
+
 	token, err := uc.generateToken(ctx, newUser.ID)
 	if err != nil {
 		return nil, err
 	}
 
-	return token, tx.Commit().Error
+	return token, nil
 }
 
 func (uc *userUsecase) Login(ctx context.Context, payload *model.UserLoginPayload) (*model.AuthResponse, error) {
@@ -141,7 +161,7 @@ func (uc *userUsecase) RefreshToken(ctx context.Context, payload *model.RefreshT
 	return token, nil
 }
 
-func (uc *userUsecase) Logout(ctx context.Context, payload *model.LogoutPayload) error {
+func (uc *userUsecase) Logout(ctx context.Context, payload *model.UserLogoutPayload) error {
 	_ = uc.tokenRepo.Revoke(ctx, payload.UserID, payload.TokenID, model.AccessToken)
 	_ = uc.tokenRepo.Revoke(ctx, payload.UserID, payload.TokenID, model.RefreshToken)
 
@@ -198,4 +218,23 @@ func (uc *userUsecase) isUsernameOrEmailExist(ctx context.Context, username stri
 		return true, nil
 	}
 	return false, nil
+}
+
+func (uc *userUsecase) addDefaultGroup(ctx context.Context, userID string) error {
+	group, err := uc.groupRepo.FindByName(ctx, constant.GroupDefault)
+	if err != nil {
+		return err
+	}
+	if group == nil {
+		return model.ErrGroupNotFound
+	}
+
+	err = uc.userGroupRepo.Create(ctx, &model.UserGroup{
+		UserID:  userID,
+		GroupID: group.ID,
+	})
+	if err != nil {
+		return err
+	}
+	return nil
 }

@@ -1,0 +1,27 @@
+syntax = "proto3";
+package pb.auth;
+
+option go_package = "pb/auth";
+
+message GroupPermission {
+  string group_id = 1;
+  string permission_id = 2;
+}
+
+message FindGroupPermissionRequest {
+  string session_user_id = 1;
+  string group_id = 2;
+  string permission_id = 3;
+}
+
+message CreateGroupPermissionRequest {
+  string session_user_id = 1;
+  string group_id = 2;
+  string permission_id = 3;
+}
+
+message DeleteGroupPermissionRequest {
+  string session_user_id = 1;
+  string group_id = 2;
+  string permission_id = 3;
+}

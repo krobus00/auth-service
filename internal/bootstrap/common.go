@@ -9,8 +9,13 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/krobus00/auth-service/internal/constant"
 	log "github.com/sirupsen/logrus"
 )
+
+func setUserIDCtx(ctx context.Context, userID string) context.Context {
+	return context.WithValue(ctx, constant.KeyUserIDCtx, userID)
+}
 
 type operation func(ctx context.Context) error
 

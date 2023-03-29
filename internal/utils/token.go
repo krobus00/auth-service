@@ -11,7 +11,7 @@ import (
 )
 
 func GenerateToken(tokenID string, userID string, expDuration time.Duration) (string, error) {
-	claims := model.MyClaims{
+	claims := model.JWTClaims{
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(expDuration)),
 			Issuer:    "auth-service",

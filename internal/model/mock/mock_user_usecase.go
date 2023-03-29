@@ -65,6 +65,20 @@ func (mr *MockUserUsecaseMockRecorder) InjectDB(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InjectDB", reflect.TypeOf((*MockUserUsecase)(nil).InjectDB), arg0)
 }
 
+// InjectGroupRepo mocks base method.
+func (m *MockUserUsecase) InjectGroupRepo(arg0 model.GroupRepository) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "InjectGroupRepo", arg0)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// InjectGroupRepo indicates an expected call of InjectGroupRepo.
+func (mr *MockUserUsecaseMockRecorder) InjectGroupRepo(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InjectGroupRepo", reflect.TypeOf((*MockUserUsecase)(nil).InjectGroupRepo), arg0)
+}
+
 // InjectTokenRepo mocks base method.
 func (m *MockUserUsecase) InjectTokenRepo(arg0 model.TokenRepository) error {
 	m.ctrl.T.Helper()
@@ -77,6 +91,20 @@ func (m *MockUserUsecase) InjectTokenRepo(arg0 model.TokenRepository) error {
 func (mr *MockUserUsecaseMockRecorder) InjectTokenRepo(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InjectTokenRepo", reflect.TypeOf((*MockUserUsecase)(nil).InjectTokenRepo), arg0)
+}
+
+// InjectUserGroupRepo mocks base method.
+func (m *MockUserUsecase) InjectUserGroupRepo(arg0 model.UserGroupRepository) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "InjectUserGroupRepo", arg0)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// InjectUserGroupRepo indicates an expected call of InjectUserGroupRepo.
+func (mr *MockUserUsecaseMockRecorder) InjectUserGroupRepo(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InjectUserGroupRepo", reflect.TypeOf((*MockUserUsecase)(nil).InjectUserGroupRepo), arg0)
 }
 
 // InjectUserRepo mocks base method.
@@ -109,7 +137,7 @@ func (mr *MockUserUsecaseMockRecorder) Login(arg0, arg1 interface{}) *gomock.Cal
 }
 
 // Logout mocks base method.
-func (m *MockUserUsecase) Logout(arg0 context.Context, arg1 *model.LogoutPayload) error {
+func (m *MockUserUsecase) Logout(arg0 context.Context, arg1 *model.UserLogoutPayload) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Logout", arg0, arg1)
 	ret0, _ := ret[0].(error)

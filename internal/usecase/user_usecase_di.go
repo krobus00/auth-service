@@ -30,3 +30,19 @@ func (uc *userUsecase) InjectDB(db *gorm.DB) error {
 	uc.db = db
 	return nil
 }
+
+func (uc *userUsecase) InjectGroupRepo(repo model.GroupRepository) error {
+	if repo == nil {
+		return errors.New("invalid group repo")
+	}
+	uc.groupRepo = repo
+	return nil
+}
+
+func (uc *userUsecase) InjectUserGroupRepo(repo model.UserGroupRepository) error {
+	if repo == nil {
+		return errors.New("invalid user group repo")
+	}
+	uc.userGroupRepo = repo
+	return nil
+}

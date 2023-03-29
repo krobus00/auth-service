@@ -48,51 +48,6 @@ func GetUserCacheKeys(id string, username string, email string) []string {
 	}
 }
 
-// HTTP DTO
-
-type HTTPUserRegistrationRequest struct {
-	FullName string `json:"fullName"`
-	Username string `json:"username"`
-	Email    string `json:"email"`
-	Password string `json:"Password"`
-}
-
-func (req HTTPUserRegistrationRequest) ToPayload() *UserRegistrationPayload {
-	return &UserRegistrationPayload{
-		FullName: req.FullName,
-		Username: req.Username,
-		Email:    req.Email,
-		Password: req.Password,
-	}
-}
-
-type HTTPUserLoginRequest struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-}
-
-func (req HTTPUserLoginRequest) ToPayload() *UserLoginPayload {
-	return &UserLoginPayload{
-		Username: req.Username,
-		Password: req.Password,
-	}
-}
-
-type HTTPAuthResponse struct {
-	AccessToken  string `json:"accessToken"`
-	RefreshToken string `json:"refreshToken"`
-}
-
-type HTTPUserInfoResponse struct {
-	ID        string     `json:"id"`
-	FullName  string     `json:"fullName"`
-	Username  string     `json:"username"`
-	Email     string     `json:"email"`
-	CreatedAt time.Time  `josn:"createdAt"`
-	UpdatedAt time.Time  `json:"updatedAt"`
-	DeletedAt *time.Time `json:"deletedAt"`
-}
-
 // Usecase payload
 
 type UserRegistrationPayload struct {
@@ -102,9 +57,21 @@ type UserRegistrationPayload struct {
 	Password string
 }
 
+func (m *UserRegistrationPayload) ParseFromProto(req *pb.RegisterRequest) {
+	m.FullName = req.GetEmail()
+	m.Username = req.GetUsername()
+	m.Email = req.GetEmail()
+	m.Password = req.GetPassword()
+}
+
 type UserLoginPayload struct {
 	Username string
 	Password string
+}
+
+func (m *UserLoginPayload) ParseFromProto(req *pb.LoginRequest) {
+	m.Username = req.GetUsername()
+	m.Password = req.GetPassword()
 }
 
 type GetUserInfoPayload struct {
@@ -116,17 +83,10 @@ type AuthResponse struct {
 	RefreshToken string
 }
 
-func (res *AuthResponse) ToHTTPResponse() *HTTPAuthResponse {
-	return &HTTPAuthResponse{
-		AccessToken:  res.AccessToken,
-		RefreshToken: res.RefreshToken,
-	}
-}
-
-func (res *AuthResponse) ToGRPCResponse() *pb.AuthResponse {
+func (m *AuthResponse) ToGRPCResponse() *pb.AuthResponse {
 	return &pb.AuthResponse{
-		AccessToken:  res.AccessToken,
-		RefreshToken: res.RefreshToken,
+		AccessToken:  m.AccessToken,
+		RefreshToken: m.RefreshToken,
 	}
 }
 
@@ -140,26 +100,14 @@ type UserInfoResponse struct {
 	DeletedAt *time.Time
 }
 
-func (res *UserInfoResponse) ToHTTPResponse() *HTTPUserInfoResponse {
-	return &HTTPUserInfoResponse{
-		ID:        res.ID,
-		FullName:  res.FullName,
-		Username:  res.Username,
-		Email:     res.Email,
-		CreatedAt: res.CreatedAt,
-		UpdatedAt: res.UpdatedAt,
-		DeletedAt: res.DeletedAt,
-	}
-}
-
-func (res *UserInfoResponse) ToGRPCResponse() *pb.User {
-	createdAt := res.CreatedAt.Format(time.RFC3339Nano)
-	updatedAt := res.UpdatedAt.Format(time.RFC3339Nano)
+func (m *UserInfoResponse) ToGRPCResponse() *pb.User {
+	createdAt := m.CreatedAt.Format(time.RFC3339Nano)
+	updatedAt := m.UpdatedAt.Format(time.RFC3339Nano)
 	return &pb.User{
-		Id:        res.ID,
-		FullName:  res.FullName,
-		Username:  res.Username,
-		Email:     res.Email,
+		Id:        m.ID,
+		FullName:  m.FullName,
+		Username:  m.Username,
+		Email:     m.Email,
 		CreatedAt: createdAt,
 		UpdatedAt: updatedAt,
 	}
@@ -170,9 +118,19 @@ type RefreshTokenPayload struct {
 	TokenID string
 }
 
-type LogoutPayload struct {
+func (m *RefreshTokenPayload) ParseFromProto(req *pb.RefreshTokenRequest) {
+	m.UserID = req.GetSessionUserId()
+	m.TokenID = req.GetTokenId()
+}
+
+type UserLogoutPayload struct {
 	UserID  string
 	TokenID string
+}
+
+func (m *UserLogoutPayload) ParseFromProto(req *pb.LogoutRequest) {
+	m.UserID = req.GetSessionUserId()
+	m.TokenID = req.GetTokenId()
 }
 
 type UserRepository interface {
@@ -193,10 +151,12 @@ type UserUsecase interface {
 	Login(ctx context.Context, payload *UserLoginPayload) (*AuthResponse, error)
 	GetUserInfo(ctx context.Context, payload *GetUserInfoPayload) (*UserInfoResponse, error)
 	RefreshToken(ctx context.Context, payload *RefreshTokenPayload) (*AuthResponse, error)
-	Logout(ctx context.Context, payload *LogoutPayload) error
+	Logout(ctx context.Context, payload *UserLogoutPayload) error
 
 	// DI
 	InjectDB(db *gorm.DB) error
 	InjectTokenRepo(repo TokenRepository) error
 	InjectUserRepo(repo UserRepository) error
+	InjectGroupRepo(repo GroupRepository) error
+	InjectUserGroupRepo(repo UserGroupRepository) error
 }

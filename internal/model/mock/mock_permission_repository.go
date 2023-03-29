@@ -37,6 +37,20 @@ func (m *MockPermissionRepository) EXPECT() *MockPermissionRepositoryMockRecorde
 	return m.recorder
 }
 
+// Create mocks base method.
+func (m *MockPermissionRepository) Create(arg0 context.Context, arg1 *model.Permission) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Create", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Create indicates an expected call of Create.
+func (mr *MockPermissionRepositoryMockRecorder) Create(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockPermissionRepository)(nil).Create), arg0, arg1)
+}
+
 // DeleteByID mocks base method.
 func (m *MockPermissionRepository) DeleteByID(arg0 context.Context, arg1 string) error {
 	m.ctrl.T.Helper()
@@ -79,20 +93,6 @@ func (m *MockPermissionRepository) FindByName(arg0 context.Context, arg1 string)
 func (mr *MockPermissionRepositoryMockRecorder) FindByName(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByName", reflect.TypeOf((*MockPermissionRepository)(nil).FindByName), arg0, arg1)
-}
-
-// FirstOrCreate mocks base method.
-func (m *MockPermissionRepository) FirstOrCreate(arg0 context.Context, arg1 *model.Permission) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "FirstOrCreate", arg0, arg1)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// FirstOrCreate indicates an expected call of FirstOrCreate.
-func (mr *MockPermissionRepositoryMockRecorder) FirstOrCreate(arg0, arg1 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FirstOrCreate", reflect.TypeOf((*MockPermissionRepository)(nil).FirstOrCreate), arg0, arg1)
 }
 
 // InjectDB mocks base method.

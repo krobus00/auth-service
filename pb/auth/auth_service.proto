@@ -3,13 +3,45 @@ package pb.auth;
 
 option go_package = "pb/auth";
 import "pb/auth/user.proto";
+import "pb/auth/auth.proto";
+import "pb/auth/permission.proto";
+import "pb/auth/group.proto";
+import "pb/auth/group_permission.proto";
+import "pb/auth/user_group.proto";
 import "google/protobuf/wrappers.proto";
+import "google/protobuf/empty.proto";
 
 service AuthService {
+  /// auth
 	rpc GetUserInfo(GetUserInfoRequest) returns (User) {}
 	rpc HasAccess(HasAccessRequest) returns (google.protobuf.BoolValue) {}
+	rpc RefreshToken(RefreshTokenRequest) returns (AuthResponse) {}
 
+  // user
 	rpc Login(LoginRequest) returns (AuthResponse) {}
 	rpc Register(RegisterRequest) returns (AuthResponse) {}
-	rpc RefreshToken(RefreshTokenRequest) returns (AuthResponse) {}
+	rpc Logout(LogoutRequest) returns (google.protobuf.Empty) {}
+
+  // permission
+  rpc FindPermissionByID(FindPermissionByIDRequest) returns (Permission) {}
+  rpc FindPermissionByName(FindPermissionByNameRequest) returns (Permission) {}
+  rpc CreatePermission(CreatePermissionRequest) returns (Permission) {}
+  rpc DeletePermission(DeletePermissionRequest) returns (google.protobuf.Empty) {}
+
+  // group
+  rpc FindGroupByID(FindGroupByIDRequest) returns (Group) {}
+  rpc FindGroupByName(FindGroupByNameRequest) returns (Group) {}
+  rpc CreateGroup(CreateGroupRequest) returns (Group) {}
+  rpc DeleteGroupByID(DeleteGroupRequest) returns (google.protobuf.Empty) {}
+
+  // group permission
+  rpc FindGroupPermission(FindGroupPermissionRequest) returns (GroupPermission) {}
+  rpc CreateGroupPermission(CreateGroupPermissionRequest) returns (GroupPermission) {}
+  rpc DeleteGroupPermission(DeleteGroupPermissionRequest) returns (google.protobuf.Empty) {}
+
+  // user group
+  rpc FindAllUserGroups(FindAllUserGroupsRequest) returns (FindAllUserGroupsResponse) {}
+  rpc FindUserGroup(FindUserGroupRequest) returns (UserGroup) {}
+  rpc CreateUserGroup(CreateUserGroupRequest) returns (UserGroup) {}
+  rpc DeleteUserGroup(DeleteUserGroupRequest) returns (google.protobuf.Empty) {}
 }

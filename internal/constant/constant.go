@@ -7,4 +7,5 @@ const (
 	KeyUserIDCtx ctxKey = "USERID"
 
 	SystemID = string("SYSTEM")
+	GuestID  = string("GUEST")
 )

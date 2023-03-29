@@ -178,18 +178,17 @@ func (r *userGroupRepository) HasPermission(ctx context.Context, groupID string,
 	return true, nil
 }
 
-func (r *userGroupRepository) getHasPermissionCache(ctx context.Context, bucketKey string, permission string) (bool, bool, error) {
-	result, err := r.redisClient.HGet(ctx, bucketKey, permission).Result()
+func (r *userGroupRepository) getHasPermissionCache(ctx context.Context, bucketKey string, permission string) (found bool, hasAccess bool, err error) {
+	result, err := r.redisClient.HGet(ctx, bucketKey, permission).Bool()
 	if err != nil {
 		if errors.Is(err, context.Canceled) {
 			return true, false, nil
 		}
 		return false, false, err
 	}
-
-	if result == "false" {
-		return true, false, nil
+	if err != nil {
+		return true, false, err
 	}
 
-	return true, true, nil
+	return result, true, nil
 }

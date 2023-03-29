@@ -36,17 +36,17 @@ func (m *MockAuthUsecase) EXPECT() *MockAuthUsecaseMockRecorder {
 }
 
 // HasAccess mocks base method.
-func (m *MockAuthUsecase) HasAccess(arg0 context.Context, arg1 string, arg2 []string) error {
+func (m *MockAuthUsecase) HasAccess(arg0 context.Context, arg1 *model.HasAccessPayload) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "HasAccess", arg0, arg1, arg2)
+	ret := m.ctrl.Call(m, "HasAccess", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // HasAccess indicates an expected call of HasAccess.
-func (mr *MockAuthUsecaseMockRecorder) HasAccess(arg0, arg1, arg2 interface{}) *gomock.Call {
+func (mr *MockAuthUsecaseMockRecorder) HasAccess(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HasAccess", reflect.TypeOf((*MockAuthUsecase)(nil).HasAccess), arg0, arg1, arg2)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HasAccess", reflect.TypeOf((*MockAuthUsecase)(nil).HasAccess), arg0, arg1)
 }
 
 // InjectUserGroupRepo mocks base method.

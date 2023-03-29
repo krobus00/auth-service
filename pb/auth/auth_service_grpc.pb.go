@@ -11,6 +11,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	wrapperspb "google.golang.org/protobuf/types/known/wrapperspb"
 )
 
@@ -20,22 +21,60 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	AuthService_GetUserInfo_FullMethodName  = "/pb.auth.AuthService/GetUserInfo"
-	AuthService_HasAccess_FullMethodName    = "/pb.auth.AuthService/HasAccess"
-	AuthService_Login_FullMethodName        = "/pb.auth.AuthService/Login"
-	AuthService_Register_FullMethodName     = "/pb.auth.AuthService/Register"
-	AuthService_RefreshToken_FullMethodName = "/pb.auth.AuthService/RefreshToken"
+	AuthService_GetUserInfo_FullMethodName           = "/pb.auth.AuthService/GetUserInfo"
+	AuthService_HasAccess_FullMethodName             = "/pb.auth.AuthService/HasAccess"
+	AuthService_RefreshToken_FullMethodName          = "/pb.auth.AuthService/RefreshToken"
+	AuthService_Login_FullMethodName                 = "/pb.auth.AuthService/Login"
+	AuthService_Register_FullMethodName              = "/pb.auth.AuthService/Register"
+	AuthService_Logout_FullMethodName                = "/pb.auth.AuthService/Logout"
+	AuthService_FindPermissionByID_FullMethodName    = "/pb.auth.AuthService/FindPermissionByID"
+	AuthService_FindPermissionByName_FullMethodName  = "/pb.auth.AuthService/FindPermissionByName"
+	AuthService_CreatePermission_FullMethodName      = "/pb.auth.AuthService/CreatePermission"
+	AuthService_DeletePermission_FullMethodName      = "/pb.auth.AuthService/DeletePermission"
+	AuthService_FindGroupByID_FullMethodName         = "/pb.auth.AuthService/FindGroupByID"
+	AuthService_FindGroupByName_FullMethodName       = "/pb.auth.AuthService/FindGroupByName"
+	AuthService_CreateGroup_FullMethodName           = "/pb.auth.AuthService/CreateGroup"
+	AuthService_DeleteGroupByID_FullMethodName       = "/pb.auth.AuthService/DeleteGroupByID"
+	AuthService_FindGroupPermission_FullMethodName   = "/pb.auth.AuthService/FindGroupPermission"
+	AuthService_CreateGroupPermission_FullMethodName = "/pb.auth.AuthService/CreateGroupPermission"
+	AuthService_DeleteGroupPermission_FullMethodName = "/pb.auth.AuthService/DeleteGroupPermission"
+	AuthService_FindAllUserGroups_FullMethodName     = "/pb.auth.AuthService/FindAllUserGroups"
+	AuthService_FindUserGroup_FullMethodName         = "/pb.auth.AuthService/FindUserGroup"
+	AuthService_CreateUserGroup_FullMethodName       = "/pb.auth.AuthService/CreateUserGroup"
+	AuthService_DeleteUserGroup_FullMethodName       = "/pb.auth.AuthService/DeleteUserGroup"
 )
 
 // AuthServiceClient is the client API for AuthService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AuthServiceClient interface {
+	/// auth
 	GetUserInfo(ctx context.Context, in *GetUserInfoRequest, opts ...grpc.CallOption) (*User, error)
 	HasAccess(ctx context.Context, in *HasAccessRequest, opts ...grpc.CallOption) (*wrapperspb.BoolValue, error)
+	RefreshToken(ctx context.Context, in *RefreshTokenRequest, opts ...grpc.CallOption) (*AuthResponse, error)
+	// user
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*AuthResponse, error)
 	Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*AuthResponse, error)
-	RefreshToken(ctx context.Context, in *RefreshTokenRequest, opts ...grpc.CallOption) (*AuthResponse, error)
+	Logout(ctx context.Context, in *LogoutRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// permission
+	FindPermissionByID(ctx context.Context, in *FindPermissionByIDRequest, opts ...grpc.CallOption) (*Permission, error)
+	FindPermissionByName(ctx context.Context, in *FindPermissionByNameRequest, opts ...grpc.CallOption) (*Permission, error)
+	CreatePermission(ctx context.Context, in *CreatePermissionRequest, opts ...grpc.CallOption) (*Permission, error)
+	DeletePermission(ctx context.Context, in *DeletePermissionRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// group
+	FindGroupByID(ctx context.Context, in *FindGroupByIDRequest, opts ...grpc.CallOption) (*Group, error)
+	FindGroupByName(ctx context.Context, in *FindGroupByNameRequest, opts ...grpc.CallOption) (*Group, error)
+	CreateGroup(ctx context.Context, in *CreateGroupRequest, opts ...grpc.CallOption) (*Group, error)
+	DeleteGroupByID(ctx context.Context, in *DeleteGroupRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// group permission
+	FindGroupPermission(ctx context.Context, in *FindGroupPermissionRequest, opts ...grpc.CallOption) (*GroupPermission, error)
+	CreateGroupPermission(ctx context.Context, in *CreateGroupPermissionRequest, opts ...grpc.CallOption) (*GroupPermission, error)
+	DeleteGroupPermission(ctx context.Context, in *DeleteGroupPermissionRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// user group
+	FindAllUserGroups(ctx context.Context, in *FindAllUserGroupsRequest, opts ...grpc.CallOption) (*FindAllUserGroupsResponse, error)
+	FindUserGroup(ctx context.Context, in *FindUserGroupRequest, opts ...grpc.CallOption) (*UserGroup, error)
+	CreateUserGroup(ctx context.Context, in *CreateUserGroupRequest, opts ...grpc.CallOption) (*UserGroup, error)
+	DeleteUserGroup(ctx context.Context, in *DeleteUserGroupRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type authServiceClient struct {
@@ -64,6 +103,15 @@ func (c *authServiceClient) HasAccess(ctx context.Context, in *HasAccessRequest,
 	return out, nil
 }
 
+func (c *authServiceClient) RefreshToken(ctx context.Context, in *RefreshTokenRequest, opts ...grpc.CallOption) (*AuthResponse, error) {
+	out := new(AuthResponse)
+	err := c.cc.Invoke(ctx, AuthService_RefreshToken_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *authServiceClient) Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*AuthResponse, error) {
 	out := new(AuthResponse)
 	err := c.cc.Invoke(ctx, AuthService_Login_FullMethodName, in, out, opts...)
@@ -82,9 +130,144 @@ func (c *authServiceClient) Register(ctx context.Context, in *RegisterRequest, o
 	return out, nil
 }
 
-func (c *authServiceClient) RefreshToken(ctx context.Context, in *RefreshTokenRequest, opts ...grpc.CallOption) (*AuthResponse, error) {
-	out := new(AuthResponse)
-	err := c.cc.Invoke(ctx, AuthService_RefreshToken_FullMethodName, in, out, opts...)
+func (c *authServiceClient) Logout(ctx context.Context, in *LogoutRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, AuthService_Logout_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) FindPermissionByID(ctx context.Context, in *FindPermissionByIDRequest, opts ...grpc.CallOption) (*Permission, error) {
+	out := new(Permission)
+	err := c.cc.Invoke(ctx, AuthService_FindPermissionByID_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) FindPermissionByName(ctx context.Context, in *FindPermissionByNameRequest, opts ...grpc.CallOption) (*Permission, error) {
+	out := new(Permission)
+	err := c.cc.Invoke(ctx, AuthService_FindPermissionByName_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) CreatePermission(ctx context.Context, in *CreatePermissionRequest, opts ...grpc.CallOption) (*Permission, error) {
+	out := new(Permission)
+	err := c.cc.Invoke(ctx, AuthService_CreatePermission_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) DeletePermission(ctx context.Context, in *DeletePermissionRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, AuthService_DeletePermission_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) FindGroupByID(ctx context.Context, in *FindGroupByIDRequest, opts ...grpc.CallOption) (*Group, error) {
+	out := new(Group)
+	err := c.cc.Invoke(ctx, AuthService_FindGroupByID_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) FindGroupByName(ctx context.Context, in *FindGroupByNameRequest, opts ...grpc.CallOption) (*Group, error) {
+	out := new(Group)
+	err := c.cc.Invoke(ctx, AuthService_FindGroupByName_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) CreateGroup(ctx context.Context, in *CreateGroupRequest, opts ...grpc.CallOption) (*Group, error) {
+	out := new(Group)
+	err := c.cc.Invoke(ctx, AuthService_CreateGroup_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) DeleteGroupByID(ctx context.Context, in *DeleteGroupRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, AuthService_DeleteGroupByID_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) FindGroupPermission(ctx context.Context, in *FindGroupPermissionRequest, opts ...grpc.CallOption) (*GroupPermission, error) {
+	out := new(GroupPermission)
+	err := c.cc.Invoke(ctx, AuthService_FindGroupPermission_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) CreateGroupPermission(ctx context.Context, in *CreateGroupPermissionRequest, opts ...grpc.CallOption) (*GroupPermission, error) {
+	out := new(GroupPermission)
+	err := c.cc.Invoke(ctx, AuthService_CreateGroupPermission_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) DeleteGroupPermission(ctx context.Context, in *DeleteGroupPermissionRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, AuthService_DeleteGroupPermission_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) FindAllUserGroups(ctx context.Context, in *FindAllUserGroupsRequest, opts ...grpc.CallOption) (*FindAllUserGroupsResponse, error) {
+	out := new(FindAllUserGroupsResponse)
+	err := c.cc.Invoke(ctx, AuthService_FindAllUserGroups_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) FindUserGroup(ctx context.Context, in *FindUserGroupRequest, opts ...grpc.CallOption) (*UserGroup, error) {
+	out := new(UserGroup)
+	err := c.cc.Invoke(ctx, AuthService_FindUserGroup_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) CreateUserGroup(ctx context.Context, in *CreateUserGroupRequest, opts ...grpc.CallOption) (*UserGroup, error) {
+	out := new(UserGroup)
+	err := c.cc.Invoke(ctx, AuthService_CreateUserGroup_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) DeleteUserGroup(ctx context.Context, in *DeleteUserGroupRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, AuthService_DeleteUserGroup_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -95,11 +278,33 @@ func (c *authServiceClient) RefreshToken(ctx context.Context, in *RefreshTokenRe
 // All implementations must embed UnimplementedAuthServiceServer
 // for forward compatibility
 type AuthServiceServer interface {
+	/// auth
 	GetUserInfo(context.Context, *GetUserInfoRequest) (*User, error)
 	HasAccess(context.Context, *HasAccessRequest) (*wrapperspb.BoolValue, error)
+	RefreshToken(context.Context, *RefreshTokenRequest) (*AuthResponse, error)
+	// user
 	Login(context.Context, *LoginRequest) (*AuthResponse, error)
 	Register(context.Context, *RegisterRequest) (*AuthResponse, error)
-	RefreshToken(context.Context, *RefreshTokenRequest) (*AuthResponse, error)
+	Logout(context.Context, *LogoutRequest) (*emptypb.Empty, error)
+	// permission
+	FindPermissionByID(context.Context, *FindPermissionByIDRequest) (*Permission, error)
+	FindPermissionByName(context.Context, *FindPermissionByNameRequest) (*Permission, error)
+	CreatePermission(context.Context, *CreatePermissionRequest) (*Permission, error)
+	DeletePermission(context.Context, *DeletePermissionRequest) (*emptypb.Empty, error)
+	// group
+	FindGroupByID(context.Context, *FindGroupByIDRequest) (*Group, error)
+	FindGroupByName(context.Context, *FindGroupByNameRequest) (*Group, error)
+	CreateGroup(context.Context, *CreateGroupRequest) (*Group, error)
+	DeleteGroupByID(context.Context, *DeleteGroupRequest) (*emptypb.Empty, error)
+	// group permission
+	FindGroupPermission(context.Context, *FindGroupPermissionRequest) (*GroupPermission, error)
+	CreateGroupPermission(context.Context, *CreateGroupPermissionRequest) (*GroupPermission, error)
+	DeleteGroupPermission(context.Context, *DeleteGroupPermissionRequest) (*emptypb.Empty, error)
+	// user group
+	FindAllUserGroups(context.Context, *FindAllUserGroupsRequest) (*FindAllUserGroupsResponse, error)
+	FindUserGroup(context.Context, *FindUserGroupRequest) (*UserGroup, error)
+	CreateUserGroup(context.Context, *CreateUserGroupRequest) (*UserGroup, error)
+	DeleteUserGroup(context.Context, *DeleteUserGroupRequest) (*emptypb.Empty, error)
 	mustEmbedUnimplementedAuthServiceServer()
 }
 
@@ -113,14 +318,62 @@ func (UnimplementedAuthServiceServer) GetUserInfo(context.Context, *GetUserInfoR
 func (UnimplementedAuthServiceServer) HasAccess(context.Context, *HasAccessRequest) (*wrapperspb.BoolValue, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method HasAccess not implemented")
 }
+func (UnimplementedAuthServiceServer) RefreshToken(context.Context, *RefreshTokenRequest) (*AuthResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RefreshToken not implemented")
+}
 func (UnimplementedAuthServiceServer) Login(context.Context, *LoginRequest) (*AuthResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
 }
 func (UnimplementedAuthServiceServer) Register(context.Context, *RegisterRequest) (*AuthResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
 }
-func (UnimplementedAuthServiceServer) RefreshToken(context.Context, *RefreshTokenRequest) (*AuthResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RefreshToken not implemented")
+func (UnimplementedAuthServiceServer) Logout(context.Context, *LogoutRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Logout not implemented")
+}
+func (UnimplementedAuthServiceServer) FindPermissionByID(context.Context, *FindPermissionByIDRequest) (*Permission, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FindPermissionByID not implemented")
+}
+func (UnimplementedAuthServiceServer) FindPermissionByName(context.Context, *FindPermissionByNameRequest) (*Permission, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FindPermissionByName not implemented")
+}
+func (UnimplementedAuthServiceServer) CreatePermission(context.Context, *CreatePermissionRequest) (*Permission, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreatePermission not implemented")
+}
+func (UnimplementedAuthServiceServer) DeletePermission(context.Context, *DeletePermissionRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeletePermission not implemented")
+}
+func (UnimplementedAuthServiceServer) FindGroupByID(context.Context, *FindGroupByIDRequest) (*Group, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FindGroupByID not implemented")
+}
+func (UnimplementedAuthServiceServer) FindGroupByName(context.Context, *FindGroupByNameRequest) (*Group, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FindGroupByName not implemented")
+}
+func (UnimplementedAuthServiceServer) CreateGroup(context.Context, *CreateGroupRequest) (*Group, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateGroup not implemented")
+}
+func (UnimplementedAuthServiceServer) DeleteGroupByID(context.Context, *DeleteGroupRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteGroupByID not implemented")
+}
+func (UnimplementedAuthServiceServer) FindGroupPermission(context.Context, *FindGroupPermissionRequest) (*GroupPermission, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FindGroupPermission not implemented")
+}
+func (UnimplementedAuthServiceServer) CreateGroupPermission(context.Context, *CreateGroupPermissionRequest) (*GroupPermission, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateGroupPermission not implemented")
+}
+func (UnimplementedAuthServiceServer) DeleteGroupPermission(context.Context, *DeleteGroupPermissionRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteGroupPermission not implemented")
+}
+func (UnimplementedAuthServiceServer) FindAllUserGroups(context.Context, *FindAllUserGroupsRequest) (*FindAllUserGroupsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FindAllUserGroups not implemented")
+}
+func (UnimplementedAuthServiceServer) FindUserGroup(context.Context, *FindUserGroupRequest) (*UserGroup, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FindUserGroup not implemented")
+}
+func (UnimplementedAuthServiceServer) CreateUserGroup(context.Context, *CreateUserGroupRequest) (*UserGroup, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateUserGroup not implemented")
+}
+func (UnimplementedAuthServiceServer) DeleteUserGroup(context.Context, *DeleteUserGroupRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteUserGroup not implemented")
 }
 func (UnimplementedAuthServiceServer) mustEmbedUnimplementedAuthServiceServer() {}
 
@@ -171,6 +424,24 @@ func _AuthService_HasAccess_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthService_RefreshToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RefreshTokenRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).RefreshToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_RefreshToken_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).RefreshToken(ctx, req.(*RefreshTokenRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _AuthService_Login_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(LoginRequest)
 	if err := dec(in); err != nil {
@@ -207,20 +478,290 @@ func _AuthService_Register_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
-func _AuthService_RefreshToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RefreshTokenRequest)
+func _AuthService_Logout_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LogoutRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AuthServiceServer).RefreshToken(ctx, in)
+		return srv.(AuthServiceServer).Logout(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: AuthService_RefreshToken_FullMethodName,
+		FullMethod: AuthService_Logout_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServiceServer).RefreshToken(ctx, req.(*RefreshTokenRequest))
+		return srv.(AuthServiceServer).Logout(ctx, req.(*LogoutRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_FindPermissionByID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FindPermissionByIDRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).FindPermissionByID(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_FindPermissionByID_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).FindPermissionByID(ctx, req.(*FindPermissionByIDRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_FindPermissionByName_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FindPermissionByNameRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).FindPermissionByName(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_FindPermissionByName_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).FindPermissionByName(ctx, req.(*FindPermissionByNameRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_CreatePermission_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreatePermissionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).CreatePermission(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_CreatePermission_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).CreatePermission(ctx, req.(*CreatePermissionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_DeletePermission_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeletePermissionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).DeletePermission(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_DeletePermission_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).DeletePermission(ctx, req.(*DeletePermissionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_FindGroupByID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FindGroupByIDRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).FindGroupByID(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_FindGroupByID_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).FindGroupByID(ctx, req.(*FindGroupByIDRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_FindGroupByName_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FindGroupByNameRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).FindGroupByName(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_FindGroupByName_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).FindGroupByName(ctx, req.(*FindGroupByNameRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_CreateGroup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateGroupRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).CreateGroup(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_CreateGroup_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).CreateGroup(ctx, req.(*CreateGroupRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_DeleteGroupByID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteGroupRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).DeleteGroupByID(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_DeleteGroupByID_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).DeleteGroupByID(ctx, req.(*DeleteGroupRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_FindGroupPermission_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FindGroupPermissionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).FindGroupPermission(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_FindGroupPermission_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).FindGroupPermission(ctx, req.(*FindGroupPermissionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_CreateGroupPermission_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateGroupPermissionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).CreateGroupPermission(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_CreateGroupPermission_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).CreateGroupPermission(ctx, req.(*CreateGroupPermissionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_DeleteGroupPermission_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteGroupPermissionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).DeleteGroupPermission(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_DeleteGroupPermission_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).DeleteGroupPermission(ctx, req.(*DeleteGroupPermissionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_FindAllUserGroups_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FindAllUserGroupsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).FindAllUserGroups(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_FindAllUserGroups_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).FindAllUserGroups(ctx, req.(*FindAllUserGroupsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_FindUserGroup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FindUserGroupRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).FindUserGroup(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_FindUserGroup_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).FindUserGroup(ctx, req.(*FindUserGroupRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_CreateUserGroup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateUserGroupRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).CreateUserGroup(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_CreateUserGroup_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).CreateUserGroup(ctx, req.(*CreateUserGroupRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_DeleteUserGroup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteUserGroupRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).DeleteUserGroup(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_DeleteUserGroup_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).DeleteUserGroup(ctx, req.(*DeleteUserGroupRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -241,6 +782,10 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _AuthService_HasAccess_Handler,
 		},
 		{
+			MethodName: "RefreshToken",
+			Handler:    _AuthService_RefreshToken_Handler,
+		},
+		{
 			MethodName: "Login",
 			Handler:    _AuthService_Login_Handler,
 		},
@@ -249,8 +794,68 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _AuthService_Register_Handler,
 		},
 		{
-			MethodName: "RefreshToken",
-			Handler:    _AuthService_RefreshToken_Handler,
+			MethodName: "Logout",
+			Handler:    _AuthService_Logout_Handler,
+		},
+		{
+			MethodName: "FindPermissionByID",
+			Handler:    _AuthService_FindPermissionByID_Handler,
+		},
+		{
+			MethodName: "FindPermissionByName",
+			Handler:    _AuthService_FindPermissionByName_Handler,
+		},
+		{
+			MethodName: "CreatePermission",
+			Handler:    _AuthService_CreatePermission_Handler,
+		},
+		{
+			MethodName: "DeletePermission",
+			Handler:    _AuthService_DeletePermission_Handler,
+		},
+		{
+			MethodName: "FindGroupByID",
+			Handler:    _AuthService_FindGroupByID_Handler,
+		},
+		{
+			MethodName: "FindGroupByName",
+			Handler:    _AuthService_FindGroupByName_Handler,
+		},
+		{
+			MethodName: "CreateGroup",
+			Handler:    _AuthService_CreateGroup_Handler,
+		},
+		{
+			MethodName: "DeleteGroupByID",
+			Handler:    _AuthService_DeleteGroupByID_Handler,
+		},
+		{
+			MethodName: "FindGroupPermission",
+			Handler:    _AuthService_FindGroupPermission_Handler,
+		},
+		{
+			MethodName: "CreateGroupPermission",
+			Handler:    _AuthService_CreateGroupPermission_Handler,
+		},
+		{
+			MethodName: "DeleteGroupPermission",
+			Handler:    _AuthService_DeleteGroupPermission_Handler,
+		},
+		{
+			MethodName: "FindAllUserGroups",
+			Handler:    _AuthService_FindAllUserGroups_Handler,
+		},
+		{
+			MethodName: "FindUserGroup",
+			Handler:    _AuthService_FindUserGroup_Handler,
+		},
+		{
+			MethodName: "CreateUserGroup",
+			Handler:    _AuthService_CreateUserGroup_Handler,
+		},
+		{
+			MethodName: "DeleteUserGroup",
+			Handler:    _AuthService_DeleteUserGroup_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

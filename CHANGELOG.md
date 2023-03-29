@@ -1,12 +1,32 @@
 
+<a name="v0.3.1"></a>
+## [v0.3.1](https://github.com/krobus00/auth-service/compare/v0.3.0...v0.3.1)
+
+> 2023-03-29
+
+### Hotfix
+
+* fix makefile
+
+
+<a name="v0.3.0"></a>
+## [v0.3.0](https://github.com/krobus00/auth-service/compare/v0.2.3...v0.3.0)
+
+> 2023-03-29
+
+### Feature
+
+* rbac ([#11](https://github.com/krobus00/auth-service/issues/11))
+
+
 <a name="v0.2.3"></a>
 ## [v0.2.3](https://github.com/krobus00/auth-service/compare/v0.2.2...v0.2.3)
 
 > 2023-03-20
 
-### Feature
+### Release
 
-* add mock ([#9](https://github.com/krobus00/auth-service/issues/9))
+* v0.2.3 ([#10](https://github.com/krobus00/auth-service/issues/10))
 
 
 <a name="v0.2.2"></a>

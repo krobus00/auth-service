@@ -1,16 +1,8 @@
 
-<a name="v0.3.1"></a>
-## [v0.3.1](https://github.com/krobus00/auth-service/compare/v0.3.0...v0.3.1)
+<a name="v0.3.2"></a>
+## [v0.3.2](https://github.com/krobus00/auth-service/compare/v0.3.1...v0.3.2)
 
-> 2023-03-29
-
-### Bump
-
-* update changelog
-
-### Fix
-
-* migration command
+> 2023-03-30
 
 ### Bump
 
@@ -18,7 +10,7 @@
 
 ### Hotfix
 
-* fix makefile
+* fix permission unmarshal
 
 
 <a name="v0.3.1"></a>

@@ -12,6 +12,29 @@
 
 * migration command
 
+### Bump
+
+* update changelog
+
+### Hotfix
+
+* fix makefile
+
+
+<a name="v0.3.1"></a>
+## [v0.3.1](https://github.com/krobus00/auth-service/compare/v0.3.0...v0.3.1)
+
+> 2023-03-29
+
+### Bump
+
+* update changelog
+* update changelog
+
+### Fix
+
+* migration command
+
 ### Hotfix
 
 * fix makefile

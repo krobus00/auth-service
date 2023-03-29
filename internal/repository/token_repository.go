@@ -2,7 +2,6 @@ package repository
 
 import (
 	"context"
-	"errors"
 	"time"
 
 	goredis "github.com/go-redis/redis/v8"
@@ -13,19 +12,18 @@ import (
 )
 
 type tokenRepository struct {
-	redis *goredis.Client
+	redisClient *goredis.Client
 }
 
-// NewTokenRepository :nodoc:
 func NewTokenRepository() model.TokenRepository {
 	return new(tokenRepository)
 }
 
-// Create :nodoc:
 func (r *tokenRepository) Create(ctx context.Context, userID string, tokenID string, tokenType model.TokenType) (string, error) {
 	var (
 		expDuration time.Duration
 		cacheKey    string
+		err         error
 	)
 
 	logger := log.WithFields(log.Fields{
@@ -36,10 +34,16 @@ func (r *tokenRepository) Create(ctx context.Context, userID string, tokenID str
 	switch tokenType {
 	case model.AccessToken:
 		expDuration = config.AccessTokenDuration()
+		cacheKey = model.RefreshTokenCacheKey(userID, tokenID)
 	case model.RefreshToken:
 		expDuration = config.RefreshTokenDuration()
+		cacheKey = model.AccessTokenCacheKey(userID, tokenID)
 	default:
-		expDuration = config.AccessTokenDuration()
+		err = model.ErrInvalidTokenType
+	}
+	if err != nil {
+		logger.Error(err.Error())
+		return "", err
 	}
 
 	token, err := utils.GenerateToken(tokenID, userID, expDuration)
@@ -48,16 +52,7 @@ func (r *tokenRepository) Create(ctx context.Context, userID string, tokenID str
 		return "", err
 	}
 
-	switch tokenType {
-	case model.RefreshToken:
-		cacheKey = model.RefreshTokenCacheKey(userID, tokenID)
-		err = r.redis.HSet(ctx, cacheKey, map[string]interface{}{"token": token}).Err()
-	case model.AccessToken:
-		cacheKey = model.AccessTokenCacheKey(userID, tokenID)
-		err = r.redis.HSet(ctx, cacheKey, map[string]interface{}{"token": token}).Err()
-	default:
-		err = model.ErrInvalidTokenType
-	}
+	err = SetWithExpiry(ctx, r.redisClient, cacheKey, token)
 
 	if err != nil {
 		logger.WithFields(log.Fields{
@@ -66,19 +61,13 @@ func (r *tokenRepository) Create(ctx context.Context, userID string, tokenID str
 		return "", err
 	}
 
-	err = r.redis.Expire(ctx, cacheKey, expDuration).Err()
-	if err != nil {
-		logger.Error(err.Error())
-		return "", err
-	}
-
 	return token, nil
 }
 
-// IsValidToken :nodoc:
 func (r *tokenRepository) IsValidToken(ctx context.Context, userID string, tokenID string, tokenType model.TokenType) (bool, error) {
 	var (
 		cacheKey string
+		token    string
 		err      error
 	)
 	logger := log.WithFields(log.Fields{
@@ -88,25 +77,27 @@ func (r *tokenRepository) IsValidToken(ctx context.Context, userID string, token
 	switch tokenType {
 	case model.RefreshToken:
 		cacheKey = model.RefreshTokenCacheKey(userID, tokenID)
-		err = r.redis.HGet(ctx, cacheKey, "token").Err()
+		cachedData, redisErr := Get(ctx, r.redisClient, cacheKey)
+		err = redisErr
+		token = string(cachedData)
 	case model.AccessToken:
 		cacheKey = model.AccessTokenCacheKey(userID, tokenID)
-		err = r.redis.HGet(ctx, cacheKey, "token").Err()
+		cachedData, redisErr := Get(ctx, r.redisClient, cacheKey)
+		err = redisErr
+		token = string(cachedData)
 	default:
 		err = model.ErrInvalidTokenType
 	}
 	if err != nil {
-		if errors.Is(err, goredis.Nil) {
-			return false, nil
-		}
 		logger.Error(err.Error())
 		return false, err
 	}
-
+	if token == "" {
+		return false, nil
+	}
 	return true, nil
 }
 
-// Revoke :nodoc:
 func (r *tokenRepository) Revoke(ctx context.Context, userID string, tokenID string, tokenType model.TokenType) error {
 	var (
 		cacheKey string
@@ -119,17 +110,14 @@ func (r *tokenRepository) Revoke(ctx context.Context, userID string, tokenID str
 	switch tokenType {
 	case model.RefreshToken:
 		cacheKey = model.RefreshTokenCacheKey(userID, tokenID)
-		err = r.redis.Del(ctx, cacheKey).Err()
+		err = DeleteByKeys(ctx, r.redisClient, []string{cacheKey})
 	case model.AccessToken:
 		cacheKey = model.AccessTokenCacheKey(userID, tokenID)
-		err = r.redis.Del(ctx, cacheKey).Err()
+		err = DeleteByKeys(ctx, r.redisClient, []string{cacheKey})
 	default:
 		err = model.ErrInvalidTokenType
 	}
 	if err != nil {
-		if errors.Is(err, goredis.Nil) {
-			return nil
-		}
 		logger.Error(err.Error())
 		return err
 	}

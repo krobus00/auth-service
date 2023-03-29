@@ -5,8 +5,10 @@ package model
 import (
 	"context"
 	"errors"
+	"fmt"
 	"time"
 
+	goredis "github.com/go-redis/redis/v8"
 	pb "github.com/krobus00/auth-service/pb/auth"
 	"gorm.io/gorm"
 )
@@ -26,56 +28,28 @@ type User struct {
 	DeletedAt *time.Time
 }
 
-// HTTP DTO
-// HTTPUserRegistrationRequest :nodoc:
-type HTTPUserRegistrationRequest struct {
-	FullName string `json:"fullName"`
-	Username string `json:"username"`
-	Email    string `json:"email"`
-	Password string `json:"Password"`
+func NewUserCacheKeyByID(id string) string {
+	return fmt.Sprintf("users:id:%s", id)
 }
 
-func (req HTTPUserRegistrationRequest) ToPayload() *UserRegistrationPayload {
-	return &UserRegistrationPayload{
-		FullName: req.FullName,
-		Username: req.Username,
-		Email:    req.Email,
-		Password: req.Password,
+func NewUserCacheKeyByUsername(username string) string {
+	return fmt.Sprintf("users:username:%s", username)
+}
+
+func NewUserCacheKeyByEmail(email string) string {
+	return fmt.Sprintf("users:email:%s", email)
+}
+
+func GetUserCacheKeys(id string, username string, email string) []string {
+	return []string{
+		NewUserCacheKeyByID(id),
+		NewUserCacheKeyByUsername(username),
+		NewUserCacheKeyByEmail(email),
 	}
-}
-
-// HTTPUserLoginRequest :nodoc:
-type HTTPUserLoginRequest struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-}
-
-func (req HTTPUserLoginRequest) ToPayload() *UserLoginPayload {
-	return &UserLoginPayload{
-		Username: req.Username,
-		Password: req.Password,
-	}
-}
-
-// HTTPAuthResponse :nodoc:
-type HTTPAuthResponse struct {
-	AccessToken  string `json:"accessToken"`
-	RefreshToken string `json:"refreshToken"`
-}
-
-// HTTPUserInfoResponse :nodoc:
-type HTTPUserInfoResponse struct {
-	ID        string     `json:"id"`
-	FullName  string     `json:"fullName"`
-	Username  string     `json:"username"`
-	Email     string     `json:"email"`
-	CreatedAt time.Time  `josn:"createdAt"`
-	UpdatedAt time.Time  `json:"updatedAt"`
-	DeletedAt *time.Time `json:"deletedAt"`
 }
 
 // Usecase payload
-// UserRegistrationPayload :nodoc:
+
 type UserRegistrationPayload struct {
 	FullName string
 	Username string
@@ -83,38 +57,39 @@ type UserRegistrationPayload struct {
 	Password string
 }
 
-// UserLoginPayload :nodoc:
+func (m *UserRegistrationPayload) ParseFromProto(req *pb.RegisterRequest) {
+	m.FullName = req.GetEmail()
+	m.Username = req.GetUsername()
+	m.Email = req.GetEmail()
+	m.Password = req.GetPassword()
+}
+
 type UserLoginPayload struct {
 	Username string
 	Password string
+}
+
+func (m *UserLoginPayload) ParseFromProto(req *pb.LoginRequest) {
+	m.Username = req.GetUsername()
+	m.Password = req.GetPassword()
 }
 
 type GetUserInfoPayload struct {
 	ID string
 }
 
-// AuthResponse :nodoc:
 type AuthResponse struct {
 	AccessToken  string
 	RefreshToken string
 }
 
-// ToHTTPResponse :nodoc:
-func (res *AuthResponse) ToHTTPResponse() *HTTPAuthResponse {
-	return &HTTPAuthResponse{
-		AccessToken:  res.AccessToken,
-		RefreshToken: res.RefreshToken,
-	}
-}
-
-func (res *AuthResponse) ToGRPCResponse() *pb.AuthResponse {
+func (m *AuthResponse) ToGRPCResponse() *pb.AuthResponse {
 	return &pb.AuthResponse{
-		AccessToken:  res.AccessToken,
-		RefreshToken: res.RefreshToken,
+		AccessToken:  m.AccessToken,
+		RefreshToken: m.RefreshToken,
 	}
 }
 
-// UserInfoResponse :nodoc:
 type UserInfoResponse struct {
 	ID        string
 	FullName  string
@@ -125,45 +100,39 @@ type UserInfoResponse struct {
 	DeletedAt *time.Time
 }
 
-// ToHTTPResponse :nodoc:
-func (res *UserInfoResponse) ToHTTPResponse() *HTTPUserInfoResponse {
-	return &HTTPUserInfoResponse{
-		ID:        res.ID,
-		FullName:  res.FullName,
-		Username:  res.Username,
-		Email:     res.Email,
-		CreatedAt: res.CreatedAt,
-		UpdatedAt: res.UpdatedAt,
-		DeletedAt: res.DeletedAt,
-	}
-}
-
-func (res *UserInfoResponse) ToGRPCResponse() *pb.User {
-	createdAt := res.CreatedAt.Format(time.RFC3339Nano)
-	updatedAt := res.UpdatedAt.Format(time.RFC3339Nano)
+func (m *UserInfoResponse) ToGRPCResponse() *pb.User {
+	createdAt := m.CreatedAt.Format(time.RFC3339Nano)
+	updatedAt := m.UpdatedAt.Format(time.RFC3339Nano)
 	return &pb.User{
-		Id:        res.ID,
-		FullName:  res.FullName,
-		Username:  res.Username,
-		Email:     res.Email,
+		Id:        m.ID,
+		FullName:  m.FullName,
+		Username:  m.Username,
+		Email:     m.Email,
 		CreatedAt: createdAt,
 		UpdatedAt: updatedAt,
 	}
 }
 
-// RefreshTokenPayload :nodoc:
 type RefreshTokenPayload struct {
 	UserID  string
 	TokenID string
 }
 
-// LogoutPayload :nodoc:
-type LogoutPayload struct {
+func (m *RefreshTokenPayload) ParseFromProto(req *pb.RefreshTokenRequest) {
+	m.UserID = req.GetSessionUserId()
+	m.TokenID = req.GetTokenId()
+}
+
+type UserLogoutPayload struct {
 	UserID  string
 	TokenID string
 }
 
-// UserRepository :nodoc:
+func (m *UserLogoutPayload) ParseFromProto(req *pb.LogoutRequest) {
+	m.UserID = req.GetSessionUserId()
+	m.TokenID = req.GetTokenId()
+}
+
 type UserRepository interface {
 	Create(ctx context.Context, user *User) error
 	FindByID(ctx context.Context, id string) (*User, error)
@@ -174,18 +143,20 @@ type UserRepository interface {
 
 	// DI
 	InjectDB(db *gorm.DB) error
+	InjectRedisClient(client *goredis.Client) error
 }
 
-// UserUsecase :nodoc:
 type UserUsecase interface {
 	Register(ctx context.Context, payload *UserRegistrationPayload) (*AuthResponse, error)
 	Login(ctx context.Context, payload *UserLoginPayload) (*AuthResponse, error)
 	GetUserInfo(ctx context.Context, payload *GetUserInfoPayload) (*UserInfoResponse, error)
 	RefreshToken(ctx context.Context, payload *RefreshTokenPayload) (*AuthResponse, error)
-	Logout(ctx context.Context, payload *LogoutPayload) error
+	Logout(ctx context.Context, payload *UserLogoutPayload) error
 
 	// DI
 	InjectDB(db *gorm.DB) error
 	InjectTokenRepo(repo TokenRepository) error
 	InjectUserRepo(repo UserRepository) error
+	InjectGroupRepo(repo GroupRepository) error
+	InjectUserGroupRepo(repo UserGroupRepository) error
 }

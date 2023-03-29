@@ -8,6 +8,7 @@ import (
 	context "context"
 	reflect "reflect"
 
+	redis "github.com/go-redis/redis/v8"
 	gomock "github.com/golang/mock/gomock"
 	model "github.com/krobus00/auth-service/internal/model"
 	gorm "gorm.io/gorm"
@@ -121,6 +122,20 @@ func (m *MockUserRepository) InjectDB(arg0 *gorm.DB) error {
 func (mr *MockUserRepositoryMockRecorder) InjectDB(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InjectDB", reflect.TypeOf((*MockUserRepository)(nil).InjectDB), arg0)
+}
+
+// InjectRedisClient mocks base method.
+func (m *MockUserRepository) InjectRedisClient(arg0 *redis.Client) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "InjectRedisClient", arg0)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// InjectRedisClient indicates an expected call of InjectRedisClient.
+func (mr *MockUserRepositoryMockRecorder) InjectRedisClient(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InjectRedisClient", reflect.TypeOf((*MockUserRepository)(nil).InjectRedisClient), arg0)
 }
 
 // UpdateByID mocks base method.

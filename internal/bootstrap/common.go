@@ -9,8 +9,13 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/krobus00/auth-service/internal/constant"
 	log "github.com/sirupsen/logrus"
 )
+
+func setUserIDCtx(ctx context.Context, userID string) context.Context {
+	return context.WithValue(ctx, constant.KeyUserIDCtx, userID)
+}
 
 type operation func(ctx context.Context) error
 
@@ -20,7 +25,7 @@ func continueOrFatal(err error) {
 	}
 }
 
-// gracefulShutdown waits for termination syscalls and doing clean up operations after received it
+// gracefulShutdown waits for termination syscalls and doing clean up operations after received it.
 func gracefulShutdown(ctx context.Context, timeout time.Duration, ops map[string]operation) <-chan struct{} {
 	wait := make(chan struct{})
 	go func() {

@@ -12,10 +12,6 @@ message User {
   string updated_at = 6;
 }
 
-message GetUserInfoRequest {
-  string user_id = 1;
-}
-
 message RegisterRequest {
   string full_name = 1;
   string email = 2;
@@ -28,16 +24,12 @@ message LoginRequest {
   string password = 2;
 }
 
-message RefreshTokenRequest {
-  string refresh_token = 1;
-}
-
 message AuthResponse {
   string access_token = 1;
   string refresh_token = 2;
 }
 
-message HasAccessRequest {
-  string user_id = 1;
-  repeated string access_names = 2;
+message LogoutRequest {
+  string session_user_id = 1;
+  string token_id = 2;
 }

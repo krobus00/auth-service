@@ -9,7 +9,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// rootCmd represents the base command when called without any subcommands
+// rootCmd represents the base command when called without any subcommands.
 var rootCmd = &cobra.Command{
 	Use:   "auth-service",
 	Short: "A brief description of your application",
@@ -33,5 +33,4 @@ func init() {
 	if err := config.LoadConfig(); err != nil {
 		log.Fatalln(err.Error())
 	}
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

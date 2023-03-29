@@ -36,29 +36,29 @@ func (m *MockAuthUsecase) EXPECT() *MockAuthUsecaseMockRecorder {
 }
 
 // HasAccess mocks base method.
-func (m *MockAuthUsecase) HasAccess(arg0 context.Context, arg1 string, arg2 []string) error {
+func (m *MockAuthUsecase) HasAccess(arg0 context.Context, arg1 *model.HasAccessPayload) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "HasAccess", arg0, arg1, arg2)
+	ret := m.ctrl.Call(m, "HasAccess", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // HasAccess indicates an expected call of HasAccess.
-func (mr *MockAuthUsecaseMockRecorder) HasAccess(arg0, arg1, arg2 interface{}) *gomock.Call {
+func (mr *MockAuthUsecaseMockRecorder) HasAccess(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HasAccess", reflect.TypeOf((*MockAuthUsecase)(nil).HasAccess), arg0, arg1, arg2)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HasAccess", reflect.TypeOf((*MockAuthUsecase)(nil).HasAccess), arg0, arg1)
 }
 
-// InjectUserAccessControlRepo mocks base method.
-func (m *MockAuthUsecase) InjectUserAccessControlRepo(arg0 model.UserAccessControlRepository) error {
+// InjectUserGroupRepo mocks base method.
+func (m *MockAuthUsecase) InjectUserGroupRepo(arg0 model.UserGroupRepository) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "InjectUserAccessControlRepo", arg0)
+	ret := m.ctrl.Call(m, "InjectUserGroupRepo", arg0)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// InjectUserAccessControlRepo indicates an expected call of InjectUserAccessControlRepo.
-func (mr *MockAuthUsecaseMockRecorder) InjectUserAccessControlRepo(arg0 interface{}) *gomock.Call {
+// InjectUserGroupRepo indicates an expected call of InjectUserGroupRepo.
+func (mr *MockAuthUsecaseMockRecorder) InjectUserGroupRepo(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InjectUserAccessControlRepo", reflect.TypeOf((*MockAuthUsecase)(nil).InjectUserAccessControlRepo), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InjectUserGroupRepo", reflect.TypeOf((*MockAuthUsecase)(nil).InjectUserGroupRepo), arg0)
 }

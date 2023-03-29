@@ -62,7 +62,7 @@ else ifeq (server, $(filter server,$(MAKECMDGOALS)))
 	$(eval launch_args=server $(launch_args))
 	$(shell if test -s ./bin/auth-service; then ./bin/auth-service $(launch_args); else echo auth binary not found; fi)
 else ifeq (migration, $(filter migration,$(MAKECMDGOALS)))
-	$(shell if ! test -s ./bin/auth-service; then go build -ldflags "-s -w" -o ./bin/auth-service ./main.go; fi)
+	$(shell if ! test -s ./bin/auth-service; then go build -ldflags "-s -w -X main.version=$(VERSION) -X main.name=$(SERVICE_NAME)"  -o ./bin/auth-service ./main.go; fi)
 	$(eval launch_args=migration --action $(MIGRATION_ACTION) --name $(MIGRATION_NAME) --step $(MIGRATION_STEP) $(launch_args))
 	./bin/auth-service $(launch_args)
 endif

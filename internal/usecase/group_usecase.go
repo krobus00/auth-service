@@ -19,6 +19,10 @@ func NewGroupUsecase() model.GroupUsecase {
 }
 
 func (uc *groupUsecase) Create(ctx context.Context, payload *model.CreateGroupPayload) (*model.Group, error) {
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
+
 	logger := logrus.WithFields(logrus.Fields{
 		"name": payload.Name,
 	})
@@ -61,6 +65,10 @@ func (uc *groupUsecase) Create(ctx context.Context, payload *model.CreateGroupPa
 }
 
 func (uc *groupUsecase) FindByID(ctx context.Context, payload *model.FindGroupByIDPayload) (*model.Group, error) {
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
+
 	logger := logrus.WithFields(logrus.Fields{
 		"id": payload.ID,
 	})
@@ -94,6 +102,10 @@ func (uc *groupUsecase) FindByID(ctx context.Context, payload *model.FindGroupBy
 }
 
 func (uc *groupUsecase) FindByName(ctx context.Context, payload *model.FindGroupByNamePayload) (*model.Group, error) {
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
+
 	logger := logrus.WithFields(logrus.Fields{
 		"name": payload.Name,
 	})
@@ -127,6 +139,10 @@ func (uc *groupUsecase) FindByName(ctx context.Context, payload *model.FindGroup
 }
 
 func (uc *groupUsecase) Update(ctx context.Context, payload *model.UpdateGroupPayload) (*model.Group, error) {
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
+
 	logger := logrus.WithFields(logrus.Fields{
 		"id":   payload.ID,
 		"name": payload.Name,
@@ -167,6 +183,10 @@ func (uc *groupUsecase) Update(ctx context.Context, payload *model.UpdateGroupPa
 }
 
 func (uc *groupUsecase) DeleteByID(ctx context.Context, payload *model.DeleteGroupByIDPayload) error {
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
+
 	logger := logrus.WithFields(logrus.Fields{
 		"id": payload.ID,
 	})

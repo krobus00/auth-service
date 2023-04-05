@@ -1,4 +1,24 @@
 
+<a name="v0.4.0"></a>
+## [v0.4.0](https://github.com/krobus00/auth-service/compare/v0.3.3...v0.4.0)
+
+> 2023-04-06
+
+### Feature
+
+* implement tracing ([#15](https://github.com/krobus00/auth-service/issues/15))
+
+
+<a name="v0.3.3"></a>
+## [v0.3.3](https://github.com/krobus00/auth-service/compare/v0.3.2...v0.3.3)
+
+> 2023-03-30
+
+### Fix
+
+* make file generate auth service mock
+
+
 <a name="v0.3.2"></a>
 ## [v0.3.2](https://github.com/krobus00/auth-service/compare/v0.3.1...v0.3.2)
 
@@ -6,6 +26,7 @@
 
 ### Bump
 
+* update changelog
 * update changelog
 
 ### Hotfix

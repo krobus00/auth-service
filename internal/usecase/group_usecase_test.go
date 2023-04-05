@@ -154,17 +154,17 @@ func Test_groupUsecase_Create(t *testing.T) {
 			authUsecase := mock.NewMockAuthUsecase(ctrl)
 
 			if tt.mockHasAccess != nil {
-				authUsecase.EXPECT().HasAccess(ctx, gomock.Any()).Times(1).Return(tt.mockHasAccess.err)
+				authUsecase.EXPECT().HasAccess(gomock.Any(), gomock.Any()).Times(1).Return(tt.mockHasAccess.err)
 			}
 
 			if tt.mockFindByName != nil {
-				groupRepo.EXPECT().FindByName(ctx, tt.args.payload.Name).
+				groupRepo.EXPECT().FindByName(gomock.Any(), tt.args.payload.Name).
 					Times(1).
 					Return(tt.mockFindByName.res, tt.mockFindByName.err)
 			}
 
 			if tt.mockCreate != nil {
-				groupRepo.EXPECT().Create(ctx, gomock.Any()).DoAndReturn(func(ctx context.Context, group *model.Group) error {
+				groupRepo.EXPECT().Create(gomock.Any(), gomock.Any()).DoAndReturn(func(ctx context.Context, group *model.Group) error {
 					group.ID = groupID
 					group.Name = tt.args.payload.Name
 					return tt.mockCreate.err
@@ -297,11 +297,11 @@ func Test_groupUsecase_FindByID(t *testing.T) {
 			authUsecase := mock.NewMockAuthUsecase(ctrl)
 
 			if tt.mockHasAccess != nil {
-				authUsecase.EXPECT().HasAccess(ctx, gomock.Any()).Times(1).Return(tt.mockHasAccess.err)
+				authUsecase.EXPECT().HasAccess(gomock.Any(), gomock.Any()).Times(1).Return(tt.mockHasAccess.err)
 			}
 
 			if tt.mockFindByID != nil {
-				groupRepo.EXPECT().FindByID(ctx, tt.args.payload.ID).
+				groupRepo.EXPECT().FindByID(gomock.Any(), tt.args.payload.ID).
 					Times(1).
 					Return(tt.mockFindByID.res, tt.mockFindByID.err)
 			}
@@ -432,11 +432,11 @@ func Test_groupUsecase_FindByName(t *testing.T) {
 			authUsecase := mock.NewMockAuthUsecase(ctrl)
 
 			if tt.mockHasAccess != nil {
-				authUsecase.EXPECT().HasAccess(ctx, gomock.Any()).Times(1).Return(tt.mockHasAccess.err)
+				authUsecase.EXPECT().HasAccess(gomock.Any(), gomock.Any()).Times(1).Return(tt.mockHasAccess.err)
 			}
 
 			if tt.mockFindByName != nil {
-				groupRepo.EXPECT().FindByName(ctx, tt.args.payload.Name).
+				groupRepo.EXPECT().FindByName(gomock.Any(), tt.args.payload.Name).
 					Times(1).
 					Return(tt.mockFindByName.res, tt.mockFindByName.err)
 			}
@@ -611,17 +611,17 @@ func Test_groupUsecase_Update(t *testing.T) {
 			authUsecase := mock.NewMockAuthUsecase(ctrl)
 
 			if tt.mockHasAccess != nil {
-				authUsecase.EXPECT().HasAccess(ctx, gomock.Any()).Times(1).Return(tt.mockHasAccess.err)
+				authUsecase.EXPECT().HasAccess(gomock.Any(), gomock.Any()).Times(1).Return(tt.mockHasAccess.err)
 			}
 
 			if tt.mockFindByID != nil {
-				groupRepo.EXPECT().FindByID(ctx, tt.args.payload.ID).
+				groupRepo.EXPECT().FindByID(gomock.Any(), tt.args.payload.ID).
 					Times(1).
 					Return(tt.mockFindByID.res, tt.mockFindByID.err)
 			}
 
 			if tt.mockUpdate != nil {
-				groupRepo.EXPECT().Update(ctx, tt.mockFindByID.res).
+				groupRepo.EXPECT().Update(gomock.Any(), tt.mockFindByID.res).
 					Times(1).
 					DoAndReturn(func(ctx context.Context, group *model.Group) error {
 						group.ID = tt.args.payload.ID
@@ -781,17 +781,17 @@ func Test_groupUsecase_DeleteByID(t *testing.T) {
 			authUsecase := mock.NewMockAuthUsecase(ctrl)
 
 			if tt.mockHasAccess != nil {
-				authUsecase.EXPECT().HasAccess(ctx, gomock.Any()).Times(1).Return(tt.mockHasAccess.err)
+				authUsecase.EXPECT().HasAccess(gomock.Any(), gomock.Any()).Times(1).Return(tt.mockHasAccess.err)
 			}
 
 			if tt.mockFindByID != nil {
-				groupRepo.EXPECT().FindByID(ctx, tt.args.payload.ID).
+				groupRepo.EXPECT().FindByID(gomock.Any(), tt.args.payload.ID).
 					Times(1).
 					Return(tt.mockFindByID.res, tt.mockFindByID.err)
 			}
 
 			if tt.mockDelete != nil {
-				groupRepo.EXPECT().DeleteByID(ctx, tt.args.payload.ID).
+				groupRepo.EXPECT().DeleteByID(gomock.Any(), tt.args.payload.ID).
 					Times(1).
 					Return(tt.mockDelete.err)
 			}

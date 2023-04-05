@@ -5,6 +5,7 @@ import (
 
 	"github.com/krobus00/auth-service/internal/constant"
 	"github.com/krobus00/auth-service/internal/model"
+	"github.com/krobus00/auth-service/internal/utils"
 	"github.com/sirupsen/logrus"
 )
 
@@ -20,6 +21,10 @@ func NewUserGroupUsecase() model.UserGroupUsecase {
 }
 
 func (uc *userGroupUsecase) Create(ctx context.Context, payload *model.CreateUserGroupPayload) (*model.UserGroup, error) {
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
+
 	logger := logrus.WithFields(logrus.Fields{
 		"userID":  payload.UserID,
 		"groupID": payload.GroupID,
@@ -83,6 +88,10 @@ func (uc *userGroupUsecase) Create(ctx context.Context, payload *model.CreateUse
 }
 
 func (uc *userGroupUsecase) FindByUserIDAndGroupID(ctx context.Context, payload *model.FindUserGroupPayload) (*model.UserGroup, error) {
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
+
 	logger := logrus.WithFields(logrus.Fields{
 		"userID":  payload.UserID,
 		"groupID": payload.GroupID,
@@ -117,6 +126,10 @@ func (uc *userGroupUsecase) FindByUserIDAndGroupID(ctx context.Context, payload 
 }
 
 func (uc *userGroupUsecase) DeleteByUserIDAndGroupID(ctx context.Context, payload *model.DeleteUserGroupPayload) error {
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
+
 	logger := logrus.WithFields(logrus.Fields{
 		"userID":  payload.UserID,
 		"groupID": payload.GroupID,
@@ -157,6 +170,10 @@ func (uc *userGroupUsecase) DeleteByUserIDAndGroupID(ctx context.Context, payloa
 }
 
 func (uc *userGroupUsecase) FindByUserID(ctx context.Context, payload *model.FindUserGroupsByUserIDPayload) (model.UserGroups, error) {
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
+
 	logger := logrus.WithFields(logrus.Fields{
 		"userID": payload.UserID,
 	})

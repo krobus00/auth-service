@@ -2,7 +2,6 @@ package grpc
 
 import (
 	"context"
-	"time"
 
 	"github.com/krobus00/auth-service/internal/model"
 	"github.com/krobus00/auth-service/internal/utils"
@@ -14,10 +13,9 @@ import (
 )
 
 func (t *Server) FindGroupByID(ctx context.Context, req *pb.FindGroupByIDRequest) (*pb.Group, error) {
-	defer func(tn time.Time) {
-		_, _, fn := utils.Trace()
-		utils.TimeTrack(tn, fn)
-	}(time.Now())
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
 
 	logger := logrus.WithFields(logrus.Fields{
 		"sessionUserID": req.GetSessionUserId(),
@@ -45,10 +43,9 @@ func (t *Server) FindGroupByID(ctx context.Context, req *pb.FindGroupByIDRequest
 }
 
 func (t *Server) FindGroupByName(ctx context.Context, req *pb.FindGroupByNameRequest) (*pb.Group, error) {
-	defer func(tn time.Time) {
-		_, _, fn := utils.Trace()
-		utils.TimeTrack(tn, fn)
-	}(time.Now())
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
 
 	logger := logrus.WithFields(logrus.Fields{
 		"sessionUserID": req.GetSessionUserId(),
@@ -76,10 +73,9 @@ func (t *Server) FindGroupByName(ctx context.Context, req *pb.FindGroupByNameReq
 }
 
 func (t *Server) CreateGroup(ctx context.Context, req *pb.CreateGroupRequest) (*pb.Group, error) {
-	defer func(tn time.Time) {
-		_, _, fn := utils.Trace()
-		utils.TimeTrack(tn, fn)
-	}(time.Now())
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
 
 	logger := logrus.WithFields(logrus.Fields{
 		"sessionUserID": req.GetSessionUserId(),
@@ -107,10 +103,9 @@ func (t *Server) CreateGroup(ctx context.Context, req *pb.CreateGroupRequest) (*
 }
 
 func (t *Server) DeleteGroupByID(ctx context.Context, req *pb.DeleteGroupRequest) (*emptypb.Empty, error) {
-	defer func(tn time.Time) {
-		_, _, fn := utils.Trace()
-		utils.TimeTrack(tn, fn)
-	}(time.Now())
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
 
 	logger := logrus.WithFields(logrus.Fields{
 		"sessionUserID": req.GetSessionUserId(),

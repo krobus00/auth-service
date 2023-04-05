@@ -308,11 +308,11 @@ func Test_groupPermissionUsecase_Create(t *testing.T) {
 			authUsecase := mock.NewMockAuthUsecase(ctrl)
 
 			if tt.mockHasAccess != nil {
-				authUsecase.EXPECT().HasAccess(ctx, gomock.Any()).Times(1).Return(tt.mockHasAccess.err)
+				authUsecase.EXPECT().HasAccess(gomock.Any(), gomock.Any()).Times(1).Return(tt.mockHasAccess.err)
 			}
 
 			if tt.mockFindGroupByID != nil {
-				groupRepo.EXPECT().FindByID(ctx, tt.args.payload.GroupID).
+				groupRepo.EXPECT().FindByID(gomock.Any(), tt.args.payload.GroupID).
 					Times(1).
 					Return(
 						tt.mockFindGroupByID.res,
@@ -321,7 +321,7 @@ func Test_groupPermissionUsecase_Create(t *testing.T) {
 			}
 
 			if tt.mockFindPermissionByID != nil {
-				permissionRepo.EXPECT().FindByID(ctx, tt.args.payload.PermissionID).
+				permissionRepo.EXPECT().FindByID(gomock.Any(), tt.args.payload.PermissionID).
 					Times(1).
 					Return(
 						tt.mockFindPermissionByID.res,
@@ -330,13 +330,13 @@ func Test_groupPermissionUsecase_Create(t *testing.T) {
 			}
 
 			if tt.mockFindGroupPermission != nil {
-				groupPermissionRepo.EXPECT().FindByGroupIDAndPermissionID(ctx, tt.args.payload.GroupID, tt.args.payload.PermissionID).
+				groupPermissionRepo.EXPECT().FindByGroupIDAndPermissionID(gomock.Any(), tt.args.payload.GroupID, tt.args.payload.PermissionID).
 					Times(1).
 					Return(tt.mockFindGroupPermission.res, tt.mockFindGroupPermission.err)
 			}
 
 			if tt.mockCreate != nil {
-				groupPermissionRepo.EXPECT().Create(ctx, &model.GroupPermission{
+				groupPermissionRepo.EXPECT().Create(gomock.Any(), &model.GroupPermission{
 					GroupID:      tt.args.payload.GroupID,
 					PermissionID: tt.args.payload.PermissionID,
 				}).
@@ -479,11 +479,11 @@ func Test_groupPermissionUsecase_FindByGroupIDAndPermissionID(t *testing.T) {
 			authUsecase := mock.NewMockAuthUsecase(ctrl)
 
 			if tt.mockHasAccess != nil {
-				authUsecase.EXPECT().HasAccess(ctx, gomock.Any()).Times(1).Return(tt.mockHasAccess.err)
+				authUsecase.EXPECT().HasAccess(gomock.Any(), gomock.Any()).Times(1).Return(tt.mockHasAccess.err)
 			}
 
 			if tt.mockFindGroupPermission != nil {
-				groupPermissionRepo.EXPECT().FindByGroupIDAndPermissionID(ctx, tt.args.payload.GroupID, tt.args.payload.PermissionID).
+				groupPermissionRepo.EXPECT().FindByGroupIDAndPermissionID(gomock.Any(), tt.args.payload.GroupID, tt.args.payload.PermissionID).
 					Times(1).
 					Return(tt.mockFindGroupPermission.res, tt.mockFindGroupPermission.err)
 			}
@@ -645,17 +645,17 @@ func Test_groupPermissionUsecase_DeleteByGroupIDAndPermissionID(t *testing.T) {
 			authUsecase := mock.NewMockAuthUsecase(ctrl)
 
 			if tt.mockHasAccess != nil {
-				authUsecase.EXPECT().HasAccess(ctx, gomock.Any()).Times(1).Return(tt.mockHasAccess.err)
+				authUsecase.EXPECT().HasAccess(gomock.Any(), gomock.Any()).Times(1).Return(tt.mockHasAccess.err)
 			}
 
 			if tt.mockFindGroupPermission != nil {
-				groupPermissionRepo.EXPECT().FindByGroupIDAndPermissionID(ctx, tt.args.payload.GroupID, tt.args.payload.PermissionID).
+				groupPermissionRepo.EXPECT().FindByGroupIDAndPermissionID(gomock.Any(), tt.args.payload.GroupID, tt.args.payload.PermissionID).
 					Times(1).
 					Return(tt.mockFindGroupPermission.res, tt.mockFindGroupPermission.err)
 			}
 
 			if tt.mockDeleteGroupPermission != nil {
-				groupPermissionRepo.EXPECT().DeleteByGroupIDAndPermissionID(ctx, tt.args.payload.GroupID, tt.args.payload.PermissionID).
+				groupPermissionRepo.EXPECT().DeleteByGroupIDAndPermissionID(gomock.Any(), tt.args.payload.GroupID, tt.args.payload.PermissionID).
 					Times(1).
 					Return(tt.mockDeleteGroupPermission.err)
 			}

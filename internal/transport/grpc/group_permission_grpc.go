@@ -2,7 +2,6 @@ package grpc
 
 import (
 	"context"
-	"time"
 
 	"github.com/krobus00/auth-service/internal/model"
 	"github.com/krobus00/auth-service/internal/utils"
@@ -14,10 +13,9 @@ import (
 )
 
 func (t *Server) FindGroupPermission(ctx context.Context, req *pb.FindGroupPermissionRequest) (*pb.GroupPermission, error) {
-	defer func(tn time.Time) {
-		_, _, fn := utils.Trace()
-		utils.TimeTrack(tn, fn)
-	}(time.Now())
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
 
 	logger := logrus.WithFields(logrus.Fields{
 		"sessionUserID": req.GetSessionUserId(),
@@ -50,10 +48,9 @@ func (t *Server) FindGroupPermission(ctx context.Context, req *pb.FindGroupPermi
 }
 
 func (t *Server) CreateGroupPermission(ctx context.Context, req *pb.CreateGroupPermissionRequest) (*pb.GroupPermission, error) {
-	defer func(tn time.Time) {
-		_, _, fn := utils.Trace()
-		utils.TimeTrack(tn, fn)
-	}(time.Now())
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
 
 	logger := logrus.WithFields(logrus.Fields{
 		"sessionUserID": req.GetSessionUserId(),
@@ -88,10 +85,9 @@ func (t *Server) CreateGroupPermission(ctx context.Context, req *pb.CreateGroupP
 }
 
 func (t *Server) DeleteGroupPermission(ctx context.Context, req *pb.DeleteGroupPermissionRequest) (*emptypb.Empty, error) {
-	defer func(tn time.Time) {
-		_, _, fn := utils.Trace()
-		utils.TimeTrack(tn, fn)
-	}(time.Now())
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
 
 	logger := logrus.WithFields(logrus.Fields{
 		"sessionUserID": req.GetSessionUserId(),

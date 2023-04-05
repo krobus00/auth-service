@@ -154,17 +154,17 @@ func Test_permissionUsecase_Create(t *testing.T) {
 			authUsecase := mock.NewMockAuthUsecase(ctrl)
 
 			if tt.mockHasAccess != nil {
-				authUsecase.EXPECT().HasAccess(ctx, gomock.Any()).Times(1).Return(tt.mockHasAccess.err)
+				authUsecase.EXPECT().HasAccess(gomock.Any(), gomock.Any()).Times(1).Return(tt.mockHasAccess.err)
 			}
 
 			if tt.mockFindByName != nil {
-				permissionRepo.EXPECT().FindByName(ctx, tt.args.payload.Name).
+				permissionRepo.EXPECT().FindByName(gomock.Any(), tt.args.payload.Name).
 					Times(1).
 					Return(tt.mockFindByName.res, tt.mockFindByName.err)
 			}
 
 			if tt.mockCreate != nil {
-				permissionRepo.EXPECT().Create(ctx, gomock.Any()).Times(1).DoAndReturn(func(ctx context.Context, permission *model.Permission) error {
+				permissionRepo.EXPECT().Create(gomock.Any(), gomock.Any()).Times(1).DoAndReturn(func(ctx context.Context, permission *model.Permission) error {
 					permission.ID = permissionID
 					permission.Name = tt.args.payload.Name
 					return tt.mockCreate.err
@@ -297,11 +297,11 @@ func Test_permissionUsecase_FindByID(t *testing.T) {
 			authUsecase := mock.NewMockAuthUsecase(ctrl)
 
 			if tt.mockHasAccess != nil {
-				authUsecase.EXPECT().HasAccess(ctx, gomock.Any()).Times(1).Return(tt.mockHasAccess.err)
+				authUsecase.EXPECT().HasAccess(gomock.Any(), gomock.Any()).Times(1).Return(tt.mockHasAccess.err)
 			}
 
 			if tt.mockFindByID != nil {
-				permissionRepo.EXPECT().FindByID(ctx, tt.args.payload.ID).
+				permissionRepo.EXPECT().FindByID(gomock.Any(), tt.args.payload.ID).
 					Times(1).
 					Return(tt.mockFindByID.res, tt.mockFindByID.err)
 			}
@@ -432,11 +432,11 @@ func Test_permissionUsecase_FindByName(t *testing.T) {
 			authUsecase := mock.NewMockAuthUsecase(ctrl)
 
 			if tt.mockHasAccess != nil {
-				authUsecase.EXPECT().HasAccess(ctx, gomock.Any()).Times(1).Return(tt.mockHasAccess.err)
+				authUsecase.EXPECT().HasAccess(gomock.Any(), gomock.Any()).Times(1).Return(tt.mockHasAccess.err)
 			}
 
 			if tt.mockFindByName != nil {
-				permissionRepo.EXPECT().FindByName(ctx, tt.args.payload.Name).
+				permissionRepo.EXPECT().FindByName(gomock.Any(), tt.args.payload.Name).
 					Times(1).
 					Return(tt.mockFindByName.res, tt.mockFindByName.err)
 			}
@@ -608,17 +608,17 @@ func Test_permissionUsecase_Update(t *testing.T) {
 			authUsecase := mock.NewMockAuthUsecase(ctrl)
 
 			if tt.mockHasAccess != nil {
-				authUsecase.EXPECT().HasAccess(ctx, gomock.Any()).Times(1).Return(tt.mockHasAccess.err)
+				authUsecase.EXPECT().HasAccess(gomock.Any(), gomock.Any()).Times(1).Return(tt.mockHasAccess.err)
 			}
 
 			if tt.mockFindByID != nil {
-				permissionRepo.EXPECT().FindByID(ctx, tt.args.payload.ID).
+				permissionRepo.EXPECT().FindByID(gomock.Any(), tt.args.payload.ID).
 					Times(1).
 					Return(tt.mockFindByID.res, tt.mockFindByID.err)
 			}
 
 			if tt.mockUpdate != nil {
-				permissionRepo.EXPECT().Update(ctx, &model.Permission{
+				permissionRepo.EXPECT().Update(gomock.Any(), &model.Permission{
 					ID:   tt.args.payload.ID,
 					Name: tt.mockFindByID.res.Name,
 				}).Times(1).DoAndReturn(func(ctx context.Context, permission *model.Permission) error {
@@ -779,17 +779,17 @@ func Test_permissionUsecase_DeleteByID(t *testing.T) {
 			authUsecase := mock.NewMockAuthUsecase(ctrl)
 
 			if tt.mockHasAccess != nil {
-				authUsecase.EXPECT().HasAccess(ctx, gomock.Any()).Times(1).Return(tt.mockHasAccess.err)
+				authUsecase.EXPECT().HasAccess(gomock.Any(), gomock.Any()).Times(1).Return(tt.mockHasAccess.err)
 			}
 
 			if tt.mockFindByID != nil {
-				permissionRepo.EXPECT().FindByID(ctx, tt.args.payload.ID).
+				permissionRepo.EXPECT().FindByID(gomock.Any(), tt.args.payload.ID).
 					Times(1).
 					Return(tt.mockFindByID.res, tt.mockFindByID.err)
 			}
 
 			if tt.mockDelete != nil {
-				permissionRepo.EXPECT().DeleteByID(ctx, tt.args.payload.ID).
+				permissionRepo.EXPECT().DeleteByID(gomock.Any(), tt.args.payload.ID).
 					Times(1).
 					Return(tt.mockDelete.err)
 			}

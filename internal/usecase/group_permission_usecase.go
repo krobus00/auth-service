@@ -5,6 +5,7 @@ import (
 
 	"github.com/krobus00/auth-service/internal/constant"
 	"github.com/krobus00/auth-service/internal/model"
+	"github.com/krobus00/auth-service/internal/utils"
 	"github.com/sirupsen/logrus"
 )
 
@@ -20,6 +21,10 @@ func NewGroupPermissionUsecase() model.GroupPermissionUsecase {
 }
 
 func (uc *groupPermissionUsecase) Create(ctx context.Context, payload *model.CreateGroupPermissionPayload) (*model.GroupPermission, error) {
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
+
 	logger := logrus.WithFields(logrus.Fields{
 		"groupID":      payload.GroupID,
 		"permissionID": payload.PermissionID,
@@ -85,6 +90,10 @@ func (uc *groupPermissionUsecase) Create(ctx context.Context, payload *model.Cre
 }
 
 func (uc *groupPermissionUsecase) FindByGroupIDAndPermissionID(ctx context.Context, payload *model.FindGroupPermissionPayload) (*model.GroupPermission, error) {
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
+
 	logger := logrus.WithFields(logrus.Fields{
 		"groupID":      payload.GroupID,
 		"permissionID": payload.PermissionID,
@@ -119,6 +128,10 @@ func (uc *groupPermissionUsecase) FindByGroupIDAndPermissionID(ctx context.Conte
 }
 
 func (uc *groupPermissionUsecase) DeleteByGroupIDAndPermissionID(ctx context.Context, payload *model.DeleteGroupPermissionPayload) error {
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
+
 	logger := logrus.WithFields(logrus.Fields{
 		"groupID":      payload.GroupID,
 		"permissionID": payload.PermissionID,

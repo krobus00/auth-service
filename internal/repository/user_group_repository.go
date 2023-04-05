@@ -7,6 +7,8 @@ import (
 	"strings"
 
 	"github.com/goccy/go-json"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
 
 	goredis "github.com/go-redis/redis/v8"
 	"github.com/krobus00/auth-service/internal/model"
@@ -85,6 +87,12 @@ func (r *userGroupRepository) FindByUserIDAndGroupID(ctx context.Context, userID
 }
 
 func (r *userGroupRepository) FindByUserID(ctx context.Context, userID string) ([]*model.UserGroup, error) {
+	_, _, fn := utils.Trace()
+	tr := otel.Tracer("repository")
+	ctx, span := tr.Start(ctx, fn)
+	defer span.End()
+	span.SetAttributes(attribute.String("database.operation", "select"))
+
 	logger := logrus.WithFields(logrus.Fields{
 		"userID": userID,
 	})
@@ -188,7 +196,7 @@ func (r *userGroupRepository) getHasPermissionCache(ctx context.Context, bucketK
 		return false, false, err
 	}
 
-	err = json.Unmarshal([]byte(strings.Replace(result, "\"", "", 2)), &hasAccess)
+	err = json.Unmarshal([]byte(strings.ReplaceAll(result, "\"", "")), &hasAccess)
 	if err != nil {
 		return false, false, err
 	}

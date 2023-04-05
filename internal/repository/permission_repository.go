@@ -2,8 +2,9 @@ package repository
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
+
+	"github.com/goccy/go-json"
 
 	goredis "github.com/go-redis/redis/v8"
 	"github.com/krobus00/auth-service/internal/model"
@@ -23,6 +24,10 @@ func NewPermissionRepository() model.PermissionRepository {
 }
 
 func (r *permissionRepository) Create(ctx context.Context, permission *model.Permission) error {
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
+
 	logger := logrus.WithFields(logrus.Fields{
 		"id":   permission.ID,
 		"name": permission.Name,
@@ -42,6 +47,10 @@ func (r *permissionRepository) Create(ctx context.Context, permission *model.Per
 }
 
 func (r *permissionRepository) FindByID(ctx context.Context, id string) (*model.Permission, error) {
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
+
 	logger := logrus.WithFields(logrus.Fields{
 		"id": id,
 	})
@@ -82,6 +91,10 @@ func (r *permissionRepository) FindByID(ctx context.Context, id string) (*model.
 }
 
 func (r *permissionRepository) FindByName(ctx context.Context, name string) (*model.Permission, error) {
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
+
 	logger := logrus.WithFields(logrus.Fields{
 		"name": name,
 	})
@@ -122,6 +135,10 @@ func (r *permissionRepository) FindByName(ctx context.Context, name string) (*mo
 }
 
 func (r *permissionRepository) Update(ctx context.Context, permission *model.Permission) error {
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
+
 	logger := logrus.WithFields(logrus.Fields{
 		"id": permission.ID,
 	})
@@ -140,6 +157,10 @@ func (r *permissionRepository) Update(ctx context.Context, permission *model.Per
 }
 
 func (r *permissionRepository) DeleteByID(ctx context.Context, id string) error {
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
+
 	logger := logrus.WithFields(logrus.Fields{
 		"id": id,
 	})

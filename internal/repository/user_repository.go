@@ -22,6 +22,10 @@ func NewUserRepository() model.UserRepository {
 }
 
 func (r *userRepository) Create(ctx context.Context, user *model.User) error {
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
+
 	logger := log.WithFields(log.Fields{
 		"id":       user.ID,
 		"username": user.Username,
@@ -42,6 +46,10 @@ func (r *userRepository) Create(ctx context.Context, user *model.User) error {
 }
 
 func (r *userRepository) FindByID(ctx context.Context, id string) (*model.User, error) {
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
+
 	logger := log.WithFields(log.Fields{
 		"id": id,
 	})
@@ -82,6 +90,10 @@ func (r *userRepository) FindByID(ctx context.Context, id string) (*model.User, 
 }
 
 func (r *userRepository) FindByUsername(ctx context.Context, username string) (*model.User, error) {
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
+
 	logger := log.WithFields(log.Fields{
 		"username": username,
 	})
@@ -121,6 +133,10 @@ func (r *userRepository) FindByUsername(ctx context.Context, username string) (*
 }
 
 func (r *userRepository) FindByEmail(ctx context.Context, email string) (*model.User, error) {
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
+
 	logger := log.WithFields(log.Fields{
 		"email": email,
 	})

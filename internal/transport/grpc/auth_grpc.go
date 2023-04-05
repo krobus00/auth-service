@@ -2,7 +2,6 @@ package grpc
 
 import (
 	"context"
-	"time"
 
 	"github.com/krobus00/auth-service/internal/model"
 	"github.com/krobus00/auth-service/internal/utils"
@@ -13,10 +12,9 @@ import (
 )
 
 func (t *Server) GetUserInfo(ctx context.Context, req *pb.GetUserInfoRequest) (*pb.User, error) {
-	defer func(tn time.Time) {
-		_, _, fn := utils.Trace()
-		utils.TimeTrack(tn, fn)
-	}(time.Now())
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
 
 	res, err := t.userUC.GetUserInfo(ctx, &model.GetUserInfoPayload{
 		ID: req.GetUserId(),
@@ -28,10 +26,9 @@ func (t *Server) GetUserInfo(ctx context.Context, req *pb.GetUserInfoRequest) (*
 }
 
 func (t *Server) HasAccess(ctx context.Context, req *pb.HasAccessRequest) (*wrapperspb.BoolValue, error) {
-	defer func(tn time.Time) {
-		_, _, fn := utils.Trace()
-		utils.TimeTrack(tn, fn)
-	}(time.Now())
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
 
 	payload := new(model.HasAccessPayload)
 	payload.ParseFromProto(req)
@@ -43,10 +40,9 @@ func (t *Server) HasAccess(ctx context.Context, req *pb.HasAccessRequest) (*wrap
 }
 
 func (t *Server) RefreshToken(ctx context.Context, req *pb.RefreshTokenRequest) (*pb.AuthResponse, error) {
-	defer func(tn time.Time) {
-		_, _, fn := utils.Trace()
-		utils.TimeTrack(tn, fn)
-	}(time.Now())
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
 
 	payload := new(model.RefreshTokenPayload)
 	payload.ParseFromProto(req)

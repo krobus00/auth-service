@@ -19,6 +19,10 @@ func NewPermissionUsecase() model.PermissionUsecase {
 }
 
 func (uc *permissionUsecase) Create(ctx context.Context, payload *model.CreatePermissionPayload) (*model.Permission, error) {
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
+
 	logger := logrus.WithFields(logrus.Fields{
 		"name": payload.Name,
 	})
@@ -61,6 +65,10 @@ func (uc *permissionUsecase) Create(ctx context.Context, payload *model.CreatePe
 }
 
 func (uc *permissionUsecase) FindByID(ctx context.Context, payload *model.FindPermissionByIDPayload) (*model.Permission, error) {
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
+
 	logger := logrus.WithFields(logrus.Fields{
 		"id": payload.ID,
 	})
@@ -94,6 +102,10 @@ func (uc *permissionUsecase) FindByID(ctx context.Context, payload *model.FindPe
 }
 
 func (uc *permissionUsecase) FindByName(ctx context.Context, payload *model.FindPermissionByNamePayload) (*model.Permission, error) {
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
+
 	logger := logrus.WithFields(logrus.Fields{
 		"name": payload.Name,
 	})
@@ -127,6 +139,10 @@ func (uc *permissionUsecase) FindByName(ctx context.Context, payload *model.Find
 }
 
 func (uc *permissionUsecase) Update(ctx context.Context, payload *model.UpdatePermissionPayload) (*model.Permission, error) {
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
+
 	logger := logrus.WithFields(logrus.Fields{
 		"id":   payload.ID,
 		"name": payload.Name,
@@ -167,6 +183,10 @@ func (uc *permissionUsecase) Update(ctx context.Context, payload *model.UpdatePe
 }
 
 func (uc *permissionUsecase) DeleteByID(ctx context.Context, payload *model.DeletePermissionByIDPayload) error {
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
+
 	logger := logrus.WithFields(logrus.Fields{
 		"id": payload.ID,
 	})

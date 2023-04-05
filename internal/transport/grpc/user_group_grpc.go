@@ -2,7 +2,6 @@ package grpc
 
 import (
 	"context"
-	"time"
 
 	"github.com/krobus00/auth-service/internal/model"
 	"github.com/krobus00/auth-service/internal/utils"
@@ -14,10 +13,9 @@ import (
 )
 
 func (t *Server) FindAllUserGroups(ctx context.Context, req *pb.FindAllUserGroupsRequest) (*pb.FindAllUserGroupsResponse, error) {
-	defer func(tn time.Time) {
-		_, _, fn := utils.Trace()
-		utils.TimeTrack(tn, fn)
-	}(time.Now())
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
 
 	logger := logrus.WithFields(logrus.Fields{
 		"sessionUserID": req.GetSessionUserId(),
@@ -45,10 +43,9 @@ func (t *Server) FindAllUserGroups(ctx context.Context, req *pb.FindAllUserGroup
 }
 
 func (t *Server) FindUserGroup(ctx context.Context, req *pb.FindUserGroupRequest) (*pb.UserGroup, error) {
-	defer func(tn time.Time) {
-		_, _, fn := utils.Trace()
-		utils.TimeTrack(tn, fn)
-	}(time.Now())
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
 
 	logger := logrus.WithFields(logrus.Fields{
 		"sessionUserID": req.GetSessionUserId(),
@@ -81,10 +78,9 @@ func (t *Server) FindUserGroup(ctx context.Context, req *pb.FindUserGroupRequest
 }
 
 func (t *Server) CreateUserGroup(ctx context.Context, req *pb.CreateUserGroupRequest) (*pb.UserGroup, error) {
-	defer func(tn time.Time) {
-		_, _, fn := utils.Trace()
-		utils.TimeTrack(tn, fn)
-	}(time.Now())
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
 
 	logger := logrus.WithFields(logrus.Fields{
 		"sessionUserID": req.GetSessionUserId(),
@@ -119,10 +115,9 @@ func (t *Server) CreateUserGroup(ctx context.Context, req *pb.CreateUserGroupReq
 }
 
 func (t *Server) DeleteUserGroup(ctx context.Context, req *pb.DeleteUserGroupRequest) (*emptypb.Empty, error) {
-	defer func(tn time.Time) {
-		_, _, fn := utils.Trace()
-		utils.TimeTrack(tn, fn)
-	}(time.Now())
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
 
 	logger := logrus.WithFields(logrus.Fields{
 		"sessionUserID": req.GetSessionUserId(),

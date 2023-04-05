@@ -2,7 +2,6 @@ package grpc
 
 import (
 	"context"
-	"time"
 
 	"github.com/krobus00/auth-service/internal/model"
 	"github.com/krobus00/auth-service/internal/utils"
@@ -13,10 +12,9 @@ import (
 )
 
 func (t *Server) Login(ctx context.Context, req *pb.LoginRequest) (*pb.AuthResponse, error) {
-	defer func(tn time.Time) {
-		_, _, fn := utils.Trace()
-		utils.TimeTrack(tn, fn)
-	}(time.Now())
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
 
 	payload := new(model.UserLoginPayload)
 	payload.ParseFromProto(req)
@@ -33,10 +31,9 @@ func (t *Server) Login(ctx context.Context, req *pb.LoginRequest) (*pb.AuthRespo
 }
 
 func (t *Server) Register(ctx context.Context, req *pb.RegisterRequest) (*pb.AuthResponse, error) {
-	defer func(tn time.Time) {
-		_, _, fn := utils.Trace()
-		utils.TimeTrack(tn, fn)
-	}(time.Now())
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
 
 	payload := new(model.UserRegistrationPayload)
 	payload.ParseFromProto(req)
@@ -53,10 +50,9 @@ func (t *Server) Register(ctx context.Context, req *pb.RegisterRequest) (*pb.Aut
 }
 
 func (t *Server) Logout(ctx context.Context, req *pb.LogoutRequest) (*emptypb.Empty, error) {
-	defer func(tn time.Time) {
-		_, _, fn := utils.Trace()
-		utils.TimeTrack(tn, fn)
-	}(time.Now())
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
 
 	payload := new(model.UserLogoutPayload)
 	payload.ParseFromProto(req)

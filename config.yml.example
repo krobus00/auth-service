@@ -5,23 +5,29 @@ ports:
 database:
   host: "localhost:5432"
   database: "auth_service"
-  username: "krobus"
-  password: "strongpassword"
+  username: "root"
+  password: 'strongpassword'
   sslmode: "disable"
   max_idle_conns: 2
   conn_max_lifetime: "1h"
   ping_interval: "5s"
   retry_attempts: 3
 redis:
-  cache_host: "redis://localhost:6379/0"
+  cache_host: "redis://:WPpJFYGPV1@localhost:6379/0"
   dial_timeout: 5
   write_timeout: 2
   read_timeout: 2
   disable_caching: false
+cache_ttl: "15m"
 bcrypt:
   cost: 10
   salt: "krobot-"
 jwt:
-  secret_key: "secret-key-for-jwt"
+  secret_key: "top-level-secret"
   access_token_duration: "15m"
   refresh_token_duration: "24h"
+jaeger:
+  protocol: "http" # http|grpc
+  host: "localhost"
+  port: "14268" # 14268|6831
+  sample_rate: 1.0

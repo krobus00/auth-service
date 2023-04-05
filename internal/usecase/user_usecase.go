@@ -25,6 +25,10 @@ func NewUserUsecase() model.UserUsecase {
 }
 
 func (uc *userUsecase) Register(ctx context.Context, payload *model.UserRegistrationPayload) (*model.AuthResponse, error) {
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
+
 	logger := log.WithFields(log.Fields{
 		"username": payload.Username,
 		"email":    payload.Email,
@@ -86,6 +90,10 @@ func (uc *userUsecase) Register(ctx context.Context, payload *model.UserRegistra
 }
 
 func (uc *userUsecase) Login(ctx context.Context, payload *model.UserLoginPayload) (*model.AuthResponse, error) {
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
+
 	logger := log.WithFields(log.Fields{
 		"username": payload.Username,
 	})
@@ -113,6 +121,10 @@ func (uc *userUsecase) Login(ctx context.Context, payload *model.UserLoginPayloa
 }
 
 func (uc *userUsecase) GetUserInfo(ctx context.Context, payload *model.GetUserInfoPayload) (*model.UserInfoResponse, error) {
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
+
 	logger := log.WithFields(log.Fields{
 		"id": payload.ID,
 	})
@@ -136,6 +148,10 @@ func (uc *userUsecase) GetUserInfo(ctx context.Context, payload *model.GetUserIn
 }
 
 func (uc *userUsecase) RefreshToken(ctx context.Context, payload *model.RefreshTokenPayload) (*model.AuthResponse, error) {
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
+
 	logger := log.WithFields(log.Fields{
 		"userID":  payload.UserID,
 		"tokenID": payload.TokenID,
@@ -171,6 +187,10 @@ func (uc *userUsecase) RefreshToken(ctx context.Context, payload *model.RefreshT
 }
 
 func (uc *userUsecase) Logout(ctx context.Context, payload *model.UserLogoutPayload) error {
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
+
 	logger := log.WithFields(log.Fields{
 		"userID":  payload.UserID,
 		"tokenID": payload.TokenID,
@@ -191,6 +211,10 @@ func (uc *userUsecase) Logout(ctx context.Context, payload *model.UserLogoutPayl
 }
 
 func (uc *userUsecase) generateToken(ctx context.Context, userID string) (*model.AuthResponse, error) {
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
+
 	tokenID := utils.GenerateUUID()
 	accessToken, err := uc.tokenRepo.Create(ctx, userID, tokenID, model.AccessToken)
 	if err != nil {
@@ -207,6 +231,10 @@ func (uc *userUsecase) generateToken(ctx context.Context, userID string) (*model
 }
 
 func (uc *userUsecase) findUserByUsernameOrEmail(ctx context.Context, username string) (*model.User, error) {
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
+
 	user, err := uc.userRepo.FindByUsername(ctx, username)
 	if err != nil {
 		return nil, err
@@ -225,6 +253,10 @@ func (uc *userUsecase) findUserByUsernameOrEmail(ctx context.Context, username s
 }
 
 func (uc *userUsecase) isUsernameOrEmailExist(ctx context.Context, username string, email string) (bool, error) {
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
+
 	user, err := uc.userRepo.FindByUsername(ctx, username)
 	if err != nil {
 		return false, err
@@ -243,6 +275,10 @@ func (uc *userUsecase) isUsernameOrEmailExist(ctx context.Context, username stri
 }
 
 func (uc *userUsecase) addDefaultGroup(ctx context.Context, userID string) error {
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
+
 	group, err := uc.groupRepo.FindByName(ctx, constant.GroupDefault)
 	if err != nil {
 		return err

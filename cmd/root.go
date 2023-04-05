@@ -4,9 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	log "github.com/sirupsen/logrus"
-
 	"github.com/krobus00/auth-service/internal/config"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
@@ -30,9 +29,9 @@ func Execute() {
 	}
 }
 
-func Init(name, version string) {
-	log.Info(fmt.Sprintf("starting %s:%s ...", name, version))
+func Init() {
 	if err := config.LoadConfig(); err != nil {
-		log.Fatalln(err.Error())
+		logrus.Fatalln(err.Error())
 	}
+	logrus.Info(fmt.Sprintf("starting %s:%s...", config.ServiceName(), config.ServiceVersion()))
 }

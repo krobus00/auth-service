@@ -8,6 +8,27 @@ import (
 	"github.com/spf13/viper"
 )
 
+var (
+	serviceName    = ""
+	serviceVersion = ""
+)
+
+func ServiceName() string {
+	return serviceName
+}
+
+func ServiceVersion() string {
+	return serviceVersion
+}
+
+func DurableID() string {
+	return fmt.Sprintf("%s-durable", serviceName)
+}
+
+func QueueGroup() string {
+	return fmt.Sprintf("%s-queue-group", serviceName)
+}
+
 func Env() string {
 	return viper.GetString("env")
 }
@@ -160,6 +181,22 @@ func BcryptCost() int {
 
 func BcryptSalt() string {
 	return viper.GetString("bcrypt.salt")
+}
+
+func JaegerProtocol() string {
+	return viper.GetString("jaeger.protocol")
+}
+
+func JaegerHost() string {
+	return viper.GetString("jaeger.host")
+}
+
+func JaegerPort() string {
+	return viper.GetString("jaeger.port")
+}
+
+func JaegerSampleRate() float64 {
+	return viper.GetFloat64("jaeger.sample_rate")
 }
 
 func parseDuration(in string, defaultDuration time.Duration) time.Duration {

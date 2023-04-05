@@ -2,8 +2,9 @@ package repository
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
+
+	"github.com/goccy/go-json"
 
 	goredis "github.com/go-redis/redis/v8"
 	"github.com/krobus00/auth-service/internal/model"
@@ -23,6 +24,10 @@ func NewGroupRepository() model.GroupRepository {
 }
 
 func (r *groupRepository) Create(ctx context.Context, group *model.Group) error {
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
+
 	logger := logrus.WithFields(logrus.Fields{
 		"id":   group.ID,
 		"name": group.Name,
@@ -42,6 +47,10 @@ func (r *groupRepository) Create(ctx context.Context, group *model.Group) error 
 }
 
 func (r *groupRepository) FindByID(ctx context.Context, id string) (*model.Group, error) {
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
+
 	logger := logrus.WithFields(logrus.Fields{
 		"id": id,
 	})
@@ -80,6 +89,10 @@ func (r *groupRepository) FindByID(ctx context.Context, id string) (*model.Group
 }
 
 func (r *groupRepository) FindByName(ctx context.Context, name string) (*model.Group, error) {
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
+
 	logger := logrus.WithFields(logrus.Fields{
 		"name": name,
 	})
@@ -118,6 +131,10 @@ func (r *groupRepository) FindByName(ctx context.Context, name string) (*model.G
 }
 
 func (r *groupRepository) Update(ctx context.Context, group *model.Group) error {
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
+
 	logger := logrus.WithFields(logrus.Fields{
 		"id": group.ID,
 	})
@@ -136,6 +153,10 @@ func (r *groupRepository) Update(ctx context.Context, group *model.Group) error 
 }
 
 func (r *groupRepository) DeleteByID(ctx context.Context, id string) error {
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
+
 	logger := logrus.WithFields(logrus.Fields{
 		"id": id,
 	})

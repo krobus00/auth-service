@@ -23,6 +23,10 @@ func NewGroupPermissionRepository() model.GroupPermissionRepository {
 }
 
 func (r *groupPermissionRepo) Create(ctx context.Context, data *model.GroupPermission) error {
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
+
 	logger := logrus.WithFields(logrus.Fields{
 		"groupID":      data.GroupID,
 		"permissionID": data.PermissionID,
@@ -42,6 +46,10 @@ func (r *groupPermissionRepo) Create(ctx context.Context, data *model.GroupPermi
 }
 
 func (r *groupPermissionRepo) FindByGroupIDAndPermissionID(ctx context.Context, groupID string, permissionID string) (*model.GroupPermission, error) {
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
+
 	logger := logrus.WithFields(logrus.Fields{
 		"groupID":      groupID,
 		"permissionID": permissionID,
@@ -85,6 +93,10 @@ func (r *groupPermissionRepo) FindByGroupIDAndPermissionID(ctx context.Context, 
 }
 
 func (r *groupPermissionRepo) DeleteByGroupIDAndPermissionID(ctx context.Context, groupID string, permissionID string) error {
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
+
 	logger := logrus.WithFields(logrus.Fields{
 		"groupID":      groupID,
 		"permissionID": permissionID,

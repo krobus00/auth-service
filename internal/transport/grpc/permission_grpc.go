@@ -2,7 +2,6 @@ package grpc
 
 import (
 	"context"
-	"time"
 
 	"github.com/krobus00/auth-service/internal/model"
 	"github.com/krobus00/auth-service/internal/utils"
@@ -14,10 +13,9 @@ import (
 )
 
 func (t *Server) FindPermissionByID(ctx context.Context, req *pb.FindPermissionByIDRequest) (*pb.Permission, error) {
-	defer func(tn time.Time) {
-		_, _, fn := utils.Trace()
-		utils.TimeTrack(tn, fn)
-	}(time.Now())
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
 
 	logger := logrus.WithFields(logrus.Fields{
 		"sessionUserID": req.GetSessionUserId(),
@@ -45,10 +43,9 @@ func (t *Server) FindPermissionByID(ctx context.Context, req *pb.FindPermissionB
 }
 
 func (t *Server) FindPermissionByName(ctx context.Context, req *pb.FindPermissionByNameRequest) (*pb.Permission, error) {
-	defer func(tn time.Time) {
-		_, _, fn := utils.Trace()
-		utils.TimeTrack(tn, fn)
-	}(time.Now())
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
 
 	logger := logrus.WithFields(logrus.Fields{
 		"sessionUserID":  req.GetSessionUserId(),
@@ -76,10 +73,9 @@ func (t *Server) FindPermissionByName(ctx context.Context, req *pb.FindPermissio
 }
 
 func (t *Server) CreatePermission(ctx context.Context, req *pb.CreatePermissionRequest) (*pb.Permission, error) {
-	defer func(tn time.Time) {
-		_, _, fn := utils.Trace()
-		utils.TimeTrack(tn, fn)
-	}(time.Now())
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
 
 	logger := logrus.WithFields(logrus.Fields{
 		"sessionUserID":  req.GetSessionUserId(),
@@ -107,10 +103,9 @@ func (t *Server) CreatePermission(ctx context.Context, req *pb.CreatePermissionR
 }
 
 func (t *Server) DeletePermission(ctx context.Context, req *pb.DeletePermissionRequest) (*emptypb.Empty, error) {
-	defer func(tn time.Time) {
-		_, _, fn := utils.Trace()
-		utils.TimeTrack(tn, fn)
-	}(time.Now())
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
 
 	logger := logrus.WithFields(logrus.Fields{
 		"sessionUserID": req.GetSessionUserId(),

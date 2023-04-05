@@ -1,7 +1,16 @@
 package utils
 
 import (
+	"context"
+	"regexp"
 	"runtime"
+
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/trace"
+)
+
+var (
+	reFn = regexp.MustCompile(`([^/]+)/?$`)
 )
 
 func Trace() (string, int, string) {
@@ -16,4 +25,10 @@ func Trace() (string, int, string) {
 	}
 
 	return file, line, fn.Name()
+}
+
+func NewSpan(ctx context.Context, fn string) (context.Context, trace.Span) {
+	tr := otel.Tracer("")
+	fn = reFn.FindString(fn)
+	return tr.Start(ctx, fn)
 }

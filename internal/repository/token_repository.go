@@ -20,6 +20,10 @@ func NewTokenRepository() model.TokenRepository {
 }
 
 func (r *tokenRepository) Create(ctx context.Context, userID string, tokenID string, tokenType model.TokenType) (string, error) {
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
+
 	var (
 		expDuration time.Duration
 		cacheKey    string
@@ -65,6 +69,10 @@ func (r *tokenRepository) Create(ctx context.Context, userID string, tokenID str
 }
 
 func (r *tokenRepository) IsValidToken(ctx context.Context, userID string, tokenID string, tokenType model.TokenType) (bool, error) {
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
+
 	var (
 		cacheKey string
 		token    string
@@ -99,6 +107,10 @@ func (r *tokenRepository) IsValidToken(ctx context.Context, userID string, token
 }
 
 func (r *tokenRepository) Revoke(ctx context.Context, userID string, tokenID string, tokenType model.TokenType) error {
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
+
 	var (
 		cacheKey string
 		err      error

@@ -6,6 +6,7 @@ import (
 
 	"github.com/krobus00/auth-service/internal/constant"
 	"github.com/krobus00/auth-service/internal/model"
+	"github.com/krobus00/auth-service/internal/utils"
 	"github.com/sirupsen/logrus"
 )
 
@@ -18,6 +19,10 @@ func NewAuthUsecase() model.AuthUsecase {
 }
 
 func (uc *authUsecase) HasAccess(ctx context.Context, payload *model.HasAccessPayload) error {
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
+
 	logger := logrus.WithFields(logrus.Fields{
 		"userID":      payload.UserID,
 		"permissions": payload.Permissions,

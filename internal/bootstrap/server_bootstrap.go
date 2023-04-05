@@ -11,7 +11,9 @@ import (
 	grpcServer "github.com/krobus00/auth-service/internal/transport/grpc"
 	"github.com/krobus00/auth-service/internal/usecase"
 	pb "github.com/krobus00/auth-service/pb/auth"
-	log "github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/propagation"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
@@ -25,6 +27,12 @@ func StartServer() {
 
 	redisClient, err := infrastructure.NewRedisClient()
 	continueOrFatal(err)
+
+	tp, err := infrastructure.JaegerTraceProvider()
+	continueOrFatal(err)
+
+	otel.SetTracerProvider(tp)
+	otel.SetTextMapPropagator(propagation.NewCompositeTextMapPropagator(propagation.TraceContext{}, propagation.Baggage{}))
 
 	// init repository
 	userRepo := repository.NewUserRepository()
@@ -135,7 +143,7 @@ func StartServer() {
 	go func() {
 		_ = authGrpcServer.Serve(lis)
 	}()
-	log.Info(fmt.Sprintf("grpc server started on :%s", config.GRPCport()))
+	logrus.Info(fmt.Sprintf("grpc server started on :%s", config.GRPCport()))
 
 	wait := gracefulShutdown(context.Background(), config.GracefulShutdownTimeOut(), map[string]operation{
 		"redis connection": func(ctx context.Context) error {
@@ -147,6 +155,9 @@ func StartServer() {
 		},
 		"grpc": func(ctx context.Context) error {
 			return lis.Close()
+		},
+		"tp": func(ctx context.Context) error {
+			return tp.Shutdown(ctx)
 		},
 	})
 	<-wait

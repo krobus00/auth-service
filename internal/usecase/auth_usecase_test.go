@@ -154,7 +154,7 @@ func Test_authUsecase_HasAccess(t *testing.T) {
 
 			userGroupRepo := mock.NewMockUserGroupRepository(ctrl)
 			if tt.mockFindByUserID != nil {
-				userGroupRepo.EXPECT().FindByUserID(ctx, tt.args.payload.UserID).
+				userGroupRepo.EXPECT().FindByUserID(gomock.Any(), tt.args.payload.UserID).
 					Times(1).
 					Return(
 						tt.mockFindByUserID.userGroups,
@@ -166,7 +166,7 @@ func Test_authUsecase_HasAccess(t *testing.T) {
 				for _, permission := range tt.args.payload.Permissions {
 					if permission != constant.PermissionAllowGuest {
 						wg.Add(1)
-						userGroupRepo.EXPECT().HasPermission(ctx, groupID, permission).
+						userGroupRepo.EXPECT().HasPermission(gomock.Any(), groupID, permission).
 							Times(1).
 							DoAndReturn(func(ctx context.Context, groupID string, permission string) (bool, error) {
 								defer wg.Done()

@@ -816,7 +816,7 @@ func Test_userUsecase_GetUserInfo(t *testing.T) {
 
 			if tt.mockFindByID != nil {
 				userRepo.EXPECT().
-					FindByID(ctx, tt.args.payload.ID).
+					FindByID(gomock.Any(), tt.args.payload.ID).
 					Times(1).
 					Return(tt.mockFindByID.res, tt.mockFindByID.err)
 			}

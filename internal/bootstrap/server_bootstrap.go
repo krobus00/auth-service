@@ -5,17 +5,19 @@ import (
 	"fmt"
 	"net"
 
+	"net/http"
+
 	"github.com/krobus00/auth-service/internal/config"
 	"github.com/krobus00/auth-service/internal/infrastructure"
 	"github.com/krobus00/auth-service/internal/repository"
-	grpcServer "github.com/krobus00/auth-service/internal/transport/grpc"
+	grpcTransport "github.com/krobus00/auth-service/internal/transport/grpc"
 	"github.com/krobus00/auth-service/internal/usecase"
 	pb "github.com/krobus00/auth-service/pb/auth"
 	"github.com/sirupsen/logrus"
-	"go.opentelemetry.io/otel"
-	"go.opentelemetry.io/otel/propagation"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
+
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 func StartServer() {
@@ -30,9 +32,6 @@ func StartServer() {
 
 	tp, err := infrastructure.JaegerTraceProvider()
 	continueOrFatal(err)
-
-	otel.SetTracerProvider(tp)
-	otel.SetTextMapPropagator(propagation.NewCompositeTextMapPropagator(propagation.TraceContext{}, propagation.Baggage{}))
 
 	// init repository
 	userRepo := repository.NewUserRepository()
@@ -118,7 +117,7 @@ func StartServer() {
 	err = groupPermissionUsecase.InjectPermisisonRepo(permissionRepo)
 	continueOrFatal(err)
 
-	grpcDelivery := grpcServer.NewGRPCServer()
+	grpcDelivery := grpcTransport.NewGRPCServer()
 	err = grpcDelivery.InjectUserUsecase(userUsecase)
 	continueOrFatal(err)
 	err = grpcDelivery.InjectAuthUsecase(authUsecase)
@@ -138,12 +137,19 @@ func StartServer() {
 	if config.Env() == "development" {
 		reflection.Register(authGrpcServer)
 	}
-	lis, _ := net.Listen("tcp", ":"+config.GRPCport())
+	lis, _ := net.Listen("tcp", ":"+config.PortGRPC())
 
 	go func() {
 		_ = authGrpcServer.Serve(lis)
 	}()
-	logrus.Info(fmt.Sprintf("grpc server started on :%s", config.GRPCport()))
+	logrus.Info(fmt.Sprintf("grpc server started on :%s", config.PortGRPC()))
+
+	http.Handle("/metrics", promhttp.Handler())
+
+	go func() {
+		_ = http.ListenAndServe(fmt.Sprintf(":%s", config.PortMetrics()), nil)
+	}()
+	logrus.Info(fmt.Sprintf("metrics server started on :%s", config.PortMetrics()))
 
 	wait := gracefulShutdown(context.Background(), config.GracefulShutdownTimeOut(), map[string]operation{
 		"redis connection": func(ctx context.Context) error {
@@ -156,7 +162,7 @@ func StartServer() {
 		"grpc": func(ctx context.Context) error {
 			return lis.Close()
 		},
-		"tp": func(ctx context.Context) error {
+		"trace provider": func(ctx context.Context) error {
 			return tp.Shutdown(ctx)
 		},
 	})

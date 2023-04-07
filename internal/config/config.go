@@ -37,8 +37,12 @@ func LogLevel() string {
 	return viper.GetString("log_level")
 }
 
-func GRPCport() string {
+func PortGRPC() string {
 	return viper.GetString("ports.grpc")
+}
+
+func PortMetrics() string {
+	return viper.GetString("ports.metrics")
 }
 
 func GracefulShutdownTimeOut() time.Duration {

@@ -93,7 +93,7 @@ docker-build-push: image push-image
 # make deploy VERSION="vx.x.x" NAMESPACE="staging"
 # make deploy VERSION="vx.x.x" NAMESPACE="staging" CONFIG="./config-staging.yml"
 deploy:
-	@helm upgrade --install auth-service ./deployments/helm/server-auth-service --set-file appConfig="${CONFIG}" --set app.container.version="${VERSION}" -n ${NAMESPACE}
+	@helm upgrade --install auth-service ./deployments/helm/auth-service --set-file appConfig="${CONFIG}" --set app.container.version="${VERSION}" -n ${NAMESPACE}
 
 # make coverage
 coverage:

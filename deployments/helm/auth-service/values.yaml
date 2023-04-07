@@ -8,7 +8,9 @@ app:
     ports:
       http: 3000
       grpc: 5000
+      metrics: 7000
   service:
     type: ClusterIP
     httpPort: 9080
     grpcPort: 9180
+    metricsPort: 7000

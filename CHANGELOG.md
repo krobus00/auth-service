@@ -1,12 +1,30 @@
 
+<a name="v0.4.1"></a>
+## [v0.4.1](https://github.com/krobus00/auth-service/compare/v0.4.0...v0.4.1)
+
+> 2023-04-07
+
+### Hotfix
+
+* goroutine leak
+
+
 <a name="v0.4.0"></a>
 ## [v0.4.0](https://github.com/krobus00/auth-service/compare/v0.3.3...v0.4.0)
 
 > 2023-04-06
 
+### Bump
+
+* update changelog
+
 ### Feature
 
 * implement tracing ([#15](https://github.com/krobus00/auth-service/issues/15))
+
+### Release
+
+* v0.4.0 ([#16](https://github.com/krobus00/auth-service/issues/16))
 
 
 <a name="v0.3.3"></a>

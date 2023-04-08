@@ -1,8 +1,22 @@
 
+<a name="v0.4.2"></a>
+## [v0.4.2](https://github.com/krobus00/auth-service/compare/v0.4.1...v0.4.2)
+
+> 2023-04-08
+
+### Hotfix
+
+* fix goroutine leak
+
+
 <a name="v0.4.1"></a>
 ## [v0.4.1](https://github.com/krobus00/auth-service/compare/v0.4.0...v0.4.1)
 
 > 2023-04-07
+
+### Bump
+
+* update changelog
 
 ### Hotfix
 

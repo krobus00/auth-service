@@ -42,27 +42,28 @@ func (uc *authUsecase) HasAccess(ctx context.Context, payload *model.HasAccessPa
 		return model.ErrUnauthorizeAccess
 	}
 
-	hasAccessCh := make(chan bool)
+	hasAccessCh := make(chan bool, len(payload.Permissions))
 
 	wg := sync.WaitGroup{}
 	for _, userGroup := range userGroups {
+		wg.Add(1)
 		go uc.userGroupHasPermissions(ctx, &wg, userGroup, payload.Permissions, hasAccessCh)
-	}
-
-	for range userGroups {
-		if <-hasAccessCh {
-			return nil
-		}
 	}
 
 	wg.Wait()
 	close(hasAccessCh)
 
+	for hasAccess := range hasAccessCh {
+		if hasAccess {
+			return nil
+		}
+	}
+
 	return model.ErrUnauthorizeAccess
+
 }
 
 func (uc *authUsecase) userGroupHasPermissions(ctx context.Context, wg *sync.WaitGroup, userGroup *model.UserGroup, permissions []string, ch chan bool) {
-	wg.Add(1)
 	defer wg.Done()
 	for _, permission := range permissions {
 		if permission == constant.PermissionAllowGuest {

@@ -7,8 +7,6 @@ import (
 	"strings"
 
 	"github.com/goccy/go-json"
-	"go.opentelemetry.io/otel"
-	"go.opentelemetry.io/otel/attribute"
 
 	goredis "github.com/go-redis/redis/v8"
 	"github.com/krobus00/auth-service/internal/model"
@@ -28,6 +26,10 @@ func NewUserGroupRepository() model.UserGroupRepository {
 }
 
 func (r *userGroupRepository) Create(ctx context.Context, data *model.UserGroup) error {
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
+
 	logger := logrus.WithFields(logrus.Fields{
 		"userID":  data.UserID,
 		"groupID": data.GroupID,
@@ -47,6 +49,10 @@ func (r *userGroupRepository) Create(ctx context.Context, data *model.UserGroup)
 }
 
 func (r *userGroupRepository) FindByUserIDAndGroupID(ctx context.Context, userID, groupID string) (*model.UserGroup, error) {
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
+
 	logger := logrus.WithFields(logrus.Fields{
 		"userID":  userID,
 		"groupID": groupID,
@@ -88,10 +94,8 @@ func (r *userGroupRepository) FindByUserIDAndGroupID(ctx context.Context, userID
 
 func (r *userGroupRepository) FindByUserID(ctx context.Context, userID string) ([]*model.UserGroup, error) {
 	_, _, fn := utils.Trace()
-	tr := otel.Tracer("repository")
-	ctx, span := tr.Start(ctx, fn)
+	ctx, span := utils.NewSpan(ctx, fn)
 	defer span.End()
-	span.SetAttributes(attribute.String("database.operation", "select"))
 
 	logger := logrus.WithFields(logrus.Fields{
 		"userID": userID,
@@ -135,6 +139,10 @@ func (r *userGroupRepository) FindByUserID(ctx context.Context, userID string) (
 }
 
 func (r *userGroupRepository) DeleteByUserIDAndGroupID(ctx context.Context, userID, groupID string) error {
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
+
 	logger := logrus.WithFields(logrus.Fields{
 		"userID":  userID,
 		"groupID": groupID,
@@ -158,6 +166,10 @@ func (r *userGroupRepository) DeleteByUserIDAndGroupID(ctx context.Context, user
 }
 
 func (r *userGroupRepository) HasPermission(ctx context.Context, groupID string, permission string) (bool, error) {
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
+
 	db := utils.GetTxFromContext(ctx, r.db)
 	cacheBucketKey := utils.NewBucketKey(model.NewGroupPermissionCacheKey(groupID), permission)
 	found, hasAccess, _ := r.getHasPermissionCache(ctx, cacheBucketKey, permission)
@@ -188,6 +200,10 @@ func (r *userGroupRepository) HasPermission(ctx context.Context, groupID string,
 }
 
 func (r *userGroupRepository) getHasPermissionCache(ctx context.Context, bucketKey string, permission string) (found bool, hasAccess bool, err error) {
+	_, _, fn := utils.Trace()
+	ctx, span := utils.NewSpan(ctx, fn)
+	defer span.End()
+
 	result, err := r.redisClient.HGet(ctx, bucketKey, permission).Result()
 	if err != nil {
 		if errors.Is(err, context.Canceled) {

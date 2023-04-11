@@ -73,6 +73,7 @@ func (uc *authUsecase) userGroupHasPermissions(ctx context.Context, wg *sync.Wai
 		hasAccess, _ := uc.userGroupRepo.HasPermission(ctx, userGroup.GroupID, permission)
 		if hasAccess {
 			ch <- hasAccess
+			break
 		}
 	}
 	ch <- false

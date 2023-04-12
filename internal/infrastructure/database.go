@@ -84,7 +84,6 @@ func reconnectDBConn() {
 }
 
 func openDBConn(dsn string) (*gorm.DB, error) {
-	logrus.Info("trying connect to database")
 	psqlDialector := postgres.Open(dsn)
 	db, err := gorm.Open(psqlDialector, &gorm.Config{})
 	if err != nil {

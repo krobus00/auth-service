@@ -5,10 +5,11 @@ import (
 
 	"github.com/jpillora/backoff"
 	"github.com/krobus00/auth-service/internal/config"
-	log "github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	gormLogger "gorm.io/gorm/logger"
+	"gorm.io/plugin/opentelemetry/tracing"
 )
 
 var (
@@ -19,7 +20,7 @@ var (
 func InitializeDBConn() {
 	conn, err := openDBConn(config.DatabaseDSN())
 	if err != nil {
-		log.WithField("databaseDSN", config.DatabaseDSN()).Fatal("failed to connect  database: ", err)
+		logrus.WithField("databaseDSN", config.DatabaseDSN()).Fatal("failed to connect  database: ", err)
 	}
 
 	DB = conn
@@ -36,7 +37,7 @@ func InitializeDBConn() {
 		DB.Logger = DB.Logger.LogMode(gormLogger.Info)
 	}
 
-	log.Info("Connection to database Server success...")
+	logrus.Info("Connection to database Server success...")
 }
 
 func checkConnection(ticker *time.Ticker) {
@@ -66,7 +67,7 @@ func reconnectDBConn() {
 	for b.Attempt() < dbRetryAttempts {
 		conn, err := openDBConn(config.DatabaseDSN())
 		if err != nil {
-			log.WithField("databaseDSN", config.DatabaseDSN()).Error("failed to connect database: ", err)
+			logrus.WithField("databaseDSN", config.DatabaseDSN()).Error("failed to connect database: ", err)
 		}
 
 		if conn != nil {
@@ -77,21 +78,27 @@ func reconnectDBConn() {
 	}
 
 	if b.Attempt() >= dbRetryAttempts {
-		log.Fatal("maximum retry to connect database")
+		logrus.Fatal("maximum retry to connect database")
 	}
 	b.Reset()
 }
 
 func openDBConn(dsn string) (*gorm.DB, error) {
+	logrus.Info("trying connect to database")
 	psqlDialector := postgres.Open(dsn)
 	db, err := gorm.Open(psqlDialector, &gorm.Config{})
 	if err != nil {
 		return nil, err
 	}
 
+	err = db.Use(tracing.NewPlugin(tracing.WithoutMetrics()))
+	if err != nil {
+		return nil, err
+	}
+
 	conn, err := db.DB()
 	if err != nil {
-		log.Fatal(err)
+		logrus.Fatal(err)
 	}
 	conn.SetMaxIdleConns(config.DatabaseMaxIdleConns())
 	conn.SetMaxOpenConns(config.DatabaseMaxOpenConns())

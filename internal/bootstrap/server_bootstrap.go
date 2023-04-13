@@ -137,17 +137,24 @@ func StartServer() {
 	if config.Env() == "development" {
 		reflection.Register(authGrpcServer)
 	}
-	lis, _ := net.Listen("tcp", ":"+config.PortGRPC())
+	lis, err := net.Listen("tcp", ":"+config.PortGRPC())
+	continueOrFatal(err)
 
 	go func() {
-		_ = authGrpcServer.Serve(lis)
+		err = authGrpcServer.Serve(lis)
+		if err != nil {
+			continueOrFatal(err)
+		}
 	}()
 	logrus.Info(fmt.Sprintf("grpc server started on :%s", config.PortGRPC()))
 
 	http.Handle("/metrics", promhttp.Handler())
 
 	go func() {
-		_ = http.ListenAndServe(fmt.Sprintf(":%s", config.PortMetrics()), nil)
+		err = http.ListenAndServe(fmt.Sprintf(":%s", config.PortMetrics()), nil)
+		if err != nil {
+			continueOrFatal(err)
+		}
 	}()
 	logrus.Info(fmt.Sprintf("metrics server started on :%s", config.PortMetrics()))
 

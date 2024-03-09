@@ -170,6 +170,9 @@ func StartServer() {
 			return lis.Close()
 		},
 		"trace provider": func(ctx context.Context) error {
+			if config.DisableTracing() {
+				return nil
+			}
 			return tp.Shutdown(ctx)
 		},
 	})

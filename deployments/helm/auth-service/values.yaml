@@ -1,7 +1,6 @@
 app:
   name: auth-service
   group: app
-  replicaCount: 1
   container:
     image: krobus00/auth-service
     version: v0.1.1
@@ -14,3 +13,16 @@ app:
     httpPort: 9080
     grpcPort: 9180
     metricsPort: 7000
+replicaCount: 1
+hpa:
+  enable: true
+  maxReplicas: 10
+  minReplicas: 1
+  CPUThreshhold: 80
+resources:
+  limits:
+    cpu: 300m
+    memory: 1Gi
+  requests:
+    cpu: 200m
+    memory: 512Mi

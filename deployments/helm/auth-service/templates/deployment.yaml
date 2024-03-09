@@ -6,7 +6,7 @@ metadata:
     app: {{ .Values.app.name }}
     group: {{ .Values.app.group }}
 spec:
-  replicas: {{ .Values.app.replicaCount }}
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       app: {{ .Values.app.name }}
@@ -26,6 +26,8 @@ spec:
             - containerPort: {{ .Values.app.container.ports.http }}
             - containerPort: {{ .Values.app.container.ports.grpc }}
             - containerPort: {{ .Values.app.container.ports.metrics }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
           volumeMounts:
             - name: {{ .Values.app.name }}-config
               mountPath: /app/config.yml

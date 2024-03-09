@@ -69,7 +69,7 @@ else ifeq (migration, $(filter migration,$(MAKECMDGOALS)))
 	./bin/$(SERVICE_NAME) $(launch_args)
 else ifeq (init-permission, $(filter init-permission,$(MAKECMDGOALS)))
 	$(shell if ! test -s ./bin/$(SERVICE_NAME); then go build $(build_args); fi)
-	$(eval launch_args=init-permission $(launch_args))
+	$(eval launch_args=permission-seeder $(launch_args))
 	./bin/$(SERVICE_NAME) $(launch_args)
 endif
 

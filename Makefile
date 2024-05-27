@@ -1,3 +1,5 @@
+# test
+
 launch_args=
 test_args=-coverprofile cover.out && go tool cover -func cover.out
 cover_args=-cover -coverprofile=cover.out `go list ./...` && go tool cover -html=cover.out
